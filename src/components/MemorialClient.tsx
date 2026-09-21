@@ -124,7 +124,11 @@ export default function MemorialClient({ data }: { data: HallPayload }) {
                 {v.description ? <p>{v.description}</p> : null}
                 <div className="video-wrap">
                   <iframe
-                    src={v.url.includes("embed") ? v.url : v.url}
+                    src={
+                      v.url.includes("embed")
+                        ? v.url
+                        : v.url.replace("watch?v=", "embed/").replace(/&.*/, "")
+                    }
                     title={v.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

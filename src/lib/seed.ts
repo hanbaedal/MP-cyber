@@ -26,7 +26,7 @@ const SAMPLE_MEMBERS = [
     },
     video: {
       title: "가족의 하루",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      url: "https://www.youtube.com/embed/pJ7_I9nwh8w",
       description: "함께했던 일상을 떠올리며",
     },
     albums: [
@@ -62,7 +62,7 @@ const SAMPLE_MEMBERS = [
     },
     video: {
       title: "추억 영상",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      url: "https://www.youtube.com/embed/pJ7_I9nwh8w",
       description: "함께 찍었던 기록",
     },
     albums: [
@@ -98,7 +98,7 @@ const SAMPLE_MEMBERS = [
     },
     video: {
       title: "할머니와의 기억",
-      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      url: "https://www.youtube.com/embed/pJ7_I9nwh8w",
       description: "짧게 남긴 영상 인사",
     },
     albums: [
@@ -119,9 +119,20 @@ const SAMPLE_MEMBERS = [
 export async function ensureSampleMembers() {
   await connectMongo();
 
+  const SAMPLE_VIDEO_URL = "https://www.youtube.com/embed/pJ7_I9nwh8w";
+
   for (const sample of SAMPLE_MEMBERS) {
     const existing = await Member.findOne({ loginId: sample.loginId });
-    if (existing) continue;
+    if (existing) {
+      // 이미 있는 샘플 회원의 영상 URL만 최신으로 맞춤
+      if (existing.hallId) {
+        await Video.updateMany(
+          { hallId: existing.hallId },
+          { $set: { url: SAMPLE_VIDEO_URL } },
+        );
+      }
+      continue;
+    }
 
     const hall = await MemorialHall.create({
       ...sample.hall,
@@ -158,6 +169,19 @@ export async function ensureSampleMembers() {
       isActive: true,
     });
   }
+
+  // 예전 샘플(릭롤) 영상만 새 URL로 교체
+  await Video.updateMany(
+    {
+      url: {
+        $in: [
+          "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        ],
+      },
+    },
+    { $set: { url: SAMPLE_VIDEO_URL } },
+  );
 
   return Member.countDocuments();
 }
