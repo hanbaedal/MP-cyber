@@ -73,25 +73,27 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <p className="footer-copy">COPYRIGHT HaeSoo ALL RIGHTS RESERVED.</p>
-        <div className="footer-company">
-          <p>주식회사 웰러님</p>
-          <p>경기도 부천시 상동 407 1번지 7층 A12호 대양훼미리코인</p>
-          <p>032-621-8267</p>
-        </div>
-        <div className="footer-sns">
-          {SNS.map((s) => (
-            <Link
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`sns-icon ${s.className}`}
-              aria-label={s.label}
-              title={s.label}
-            >
-              {s.svg}
-            </Link>
-          ))}
+        <div className="footer-row">
+          <div className="footer-company">
+            <p>주식회사 웰러님</p>
+            <p>경기도 부천시 상동 407 1번지 7층 A12호 대양훼미리코인</p>
+            <p>032-621-8267</p>
+          </div>
+          <div className="footer-sns">
+            {SNS.map((s) => (
+              <Link
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`sns-icon ${s.className}`}
+                aria-label={s.label}
+                title={s.label}
+              >
+                {s.svg}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

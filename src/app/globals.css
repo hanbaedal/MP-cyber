@@ -721,14 +721,12 @@ select {
 }
 
 .site-footer-inner {
-  max-width: 960px;
+  width: 100%;
   margin: 0 auto;
   padding: 0.85rem var(--pad-x) 1.1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.65rem;
-  text-align: center;
 }
 
 .footer-copy {
@@ -737,6 +735,14 @@ select {
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #2c3e50;
+  text-align: center;
+}
+
+.footer-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
 }
 
 .footer-company {
@@ -745,6 +751,7 @@ select {
   font-size: 0.74rem;
   color: var(--muted);
   line-height: 1.45;
+  text-align: center;
 }
 
 .footer-company p {
@@ -756,6 +763,7 @@ select {
   flex-wrap: wrap;
   gap: 0.55rem;
   justify-content: center;
+  order: -1; /* 모바일: SNS를 회사정보 위 */
 }
 
 .sns-icon {
@@ -806,6 +814,30 @@ select {
 .sns-kakao {
   background: #fee500;
   color: #3c1e1e;
+}
+
+@media (min-width: 700px) {
+  .site-footer-inner {
+    padding: 0.85rem 1.15rem 1.1rem;
+  }
+
+  .footer-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .footer-company {
+    text-align: left;
+  }
+
+  .footer-sns {
+    order: 0;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
 }
 
 .prose-page .lede {
