@@ -904,70 +904,94 @@ select {
   }
 }
 
-/* PC/노트북: 3열로 한 화면에 맞춤 */
+/* PC/노트북: 뷰포트 한 화면에 꽉 차게 */
 @media (min-width: 900px) {
   .app-main:has(.home-welldying) {
+    height: calc(100vh - var(--header-h));
     min-height: calc(100vh - var(--header-h));
+    max-height: calc(100vh - var(--header-h));
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .app-main:has(.home-welldying) .home-welldying.page {
     max-width: none;
     width: 100%;
-    padding: 0.45rem 1.1rem 0.35rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.55rem 1.15rem 0.4rem;
+  }
+
+  .app-main:has(.home-welldying) .home-lead {
     flex: 0 0 auto;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .app-main:has(.home-welldying) .home-card-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.55rem 0.65rem;
+  }
+
+  .app-main:has(.home-welldying) .home-info-card {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.7rem 0.85rem;
+    border-radius: 0.85rem;
+  }
+
+  .app-main:has(.home-welldying) .home-info-card h2 {
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .app-main:has(.home-welldying) .home-info-card p {
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
   .app-main:has(.home-welldying) .site-footer {
-    margin-top: 0.45rem;
+    flex: 0 0 auto;
+    margin-top: 0;
   }
 
   .app-main:has(.home-welldying) .site-footer-inner {
     max-width: none;
-    padding-top: 0.55rem;
-    padding-bottom: 0.65rem;
-  }
-
-  .home-lead {
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
-  }
-
-  .home-card-list {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem 0.5rem;
-  }
-
-  .home-info-card {
-    padding: 0.48rem 0.6rem;
-  }
-
-  .home-info-card h2 {
-    font-size: 0.84rem;
-  }
-
-  .home-info-card p {
-    font-size: 0.74rem;
-    line-height: 1.38;
+    padding-top: 0.5rem;
+    padding-bottom: 0.55rem;
   }
 }
 
 @media (min-width: 1200px) {
   .app-main:has(.home-welldying) .home-welldying.page {
-    padding-inline: 1.35rem;
+    padding-inline: 1.5rem;
   }
 
-  .home-card-list {
-    gap: 0.45rem 0.55rem;
+  .app-main:has(.home-welldying) .home-card-list {
+    gap: 0.65rem 0.75rem;
   }
 
-  .home-info-card h2 {
+  .app-main:has(.home-welldying) .home-info-card {
+    padding: 0.85rem 1rem;
+  }
+
+  .app-main:has(.home-welldying) .home-info-card h2 {
+    font-size: 1.02rem;
+  }
+
+  .app-main:has(.home-welldying) .home-info-card p {
     font-size: 0.88rem;
-  }
-
-  .home-info-card p {
-    font-size: 0.78rem;
+    line-height: 1.48;
   }
 }
 
