@@ -1,3 +1,5 @@
-# Intro media
-# - bgm.mp3 : 서버(Git)에 포함 → /intro/bgm.mp3
-# - intro.mp4 : 용량이 커서 Git 제외. 외부 URL(NEXT_PUBLIC_INTRO_VIDEO_URL) 또는 서버에 직접 배치
+# Intro media (서버 배포)
+# - public/intro/intro.mp4  (압축본, Git 포함)
+# - public/intro/bgm.mp3
+#
+# Render에 YouTube URL이 있어도 서버 mp4를 우선 사용합니다.

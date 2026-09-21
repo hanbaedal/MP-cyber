@@ -2,13 +2,29 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+function isYouTubeUrl(url: string) {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "");
+    return host === "youtube.com" || host === "m.youtube.com" || host === "youtu.be";
+  } catch {
+    return false;
+  }
+}
+
 function resolveVideoUrl() {
-  return (
-    process.env.INTRO_VIDEO_URL ||
-    process.env.NEXT_PUBLIC_INTRO_VIDEO_URL ||
-    process.env.NEXT_PUBLIC_INTRO_VIDEO ||
-    "/intro/intro.mp4"
-  );
+  const candidates = [
+    process.env.INTRO_VIDEO_URL,
+    process.env.NEXT_PUBLIC_INTRO_VIDEO_URL,
+    process.env.NEXT_PUBLIC_INTRO_VIDEO,
+  ].filter((v): v is string => !!v && v.trim().length > 0);
+
+  // 서버 파일 우선: YouTube 주소는 무시하고 로컬 mp4 사용
+  for (const c of candidates) {
+    if (isYouTubeUrl(c)) continue;
+    return c;
+  }
+
+  return "/intro/intro.mp4";
 }
 
 function resolveBgmUrl() {
@@ -39,7 +55,6 @@ export function toYouTubeEmbed(url: string): string | null {
     }
 
     if (!id) return null;
-    // mute=1 자동재생, loop+playlist 로 반복 재생, playsinline 모바일
     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&modestbranding=1&playsinline=1&fs=0&iv_load_policy=3`;
   } catch {
     return null;
@@ -48,7 +63,7 @@ export function toYouTubeEmbed(url: string): string | null {
 
 export async function GET() {
   const videoUrl = resolveVideoUrl();
-  const youtubeEmbed = toYouTubeEmbed(videoUrl);
+  const youtubeEmbed = isYouTubeUrl(videoUrl) ? toYouTubeEmbed(videoUrl) : null;
 
   return NextResponse.json({
     videoUrl,

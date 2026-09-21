@@ -40,6 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# large intro video only (mp3 bgm is committed under public/intro/bgm.mp3)
-/public/intro/*.mp4
-/public/intro/*.MP4
+# large raw intro sources only — compressed intro.mp4 is committed
+# /public/intro/intro.mp4 is tracked
