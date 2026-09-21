@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type IntroConfig = {
   videoUrl: string;
@@ -9,11 +9,13 @@ type IntroConfig = {
   bgmUrl: string;
 };
 
-/** 접속 시 풀스크린(반응형)으로 영상+BGM 재생 */
+/** 접속 시 풀스크린 영상 + BGM (브라우저는 보통 터치 후 소리 허용) */
 export default function IntroOverlay() {
   const [show, setShow] = useState(true);
   const [config, setConfig] = useState<IntroConfig | null>(null);
   const [videoError, setVideoError] = useState(false);
+  const [needTapForSound, setNeedTapForSound] = useState(false);
+  const [soundOn, setSoundOn] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -22,6 +24,26 @@ export default function IntroOverlay() {
     videoRef.current?.pause();
     setShow(false);
   }
+
+  const playBgm = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return false;
+    try {
+      audio.muted = false;
+      audio.volume = 1;
+      if (audio.paused) {
+        audio.currentTime = 0;
+      }
+      await audio.play();
+      setSoundOn(true);
+      setNeedTapForSound(false);
+      return true;
+    } catch {
+      setNeedTapForSound(true);
+      setSoundOn(false);
+      return false;
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,20 +69,28 @@ export default function IntroOverlay() {
 
   useEffect(() => {
     if (!show || !config) return;
-    const audio = audioRef.current;
-    if (!audio) return;
 
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
+    const audio = audioRef.current;
+    if (audio) {
+      audio.src = config.bgmUrl || "/intro/bgm.mp3";
+      audio.loop = true;
+      audio.load();
+    }
+
+    // 자동재생 시도 (많은 브라우저에서 차단 → 터치로 해제)
+    const t = window.setTimeout(() => {
+      playBgm();
+    }, 80);
 
     if (!config.isYouTube && videoRef.current) {
       const v = videoRef.current;
       v.muted = true;
       v.play().catch(() => setVideoError(true));
     }
-  }, [show, config]);
 
-  // 모바일 주소창 높이 변화 대응
+    return () => window.clearTimeout(t);
+  }, [show, config, playBgm]);
+
   useEffect(() => {
     if (!show) return;
     const setVh = () => {
@@ -78,10 +108,21 @@ export default function IntroOverlay() {
     };
   }, [show]);
 
+  function onUnlockSound() {
+    if (!soundOn) {
+      playBgm();
+    }
+  }
+
   if (!show) return null;
 
   return (
-    <div className="intro-overlay" role="dialog" aria-label="인트로">
+    <div
+      className="intro-overlay"
+      role="dialog"
+      aria-label="인트로"
+      onPointerDown={onUnlockSound}
+    >
       <div className="intro-media">
         {config?.isYouTube && config.youtubeEmbed ? (
           <iframe
@@ -106,13 +147,7 @@ export default function IntroOverlay() {
         )}
       </div>
 
-      <audio
-        ref={audioRef}
-        src={config?.bgmUrl || "/intro/bgm.mp3"}
-        preload="auto"
-        loop
-        autoPlay
-      />
+      <audio ref={audioRef} preload="auto" loop playsInline />
 
       {videoError && !config?.isYouTube ? (
         <div className="intro-start">
@@ -130,9 +165,20 @@ export default function IntroOverlay() {
           <p>소중한 사람을 언제나 기억하고 공유하는 추모관</p>
           <p>아름다운 마지막을 직접 준비하는 장례 체험까지 이용해 보세요.</p>
         </div>
+        {needTapForSound ? (
+          <p className="intro-sound-hint">화면을 터치하면 음악이 재생됩니다</p>
+        ) : null}
       </div>
 
-      <button type="button" className="btn-ghost intro-skip floating" onClick={finish}>
+      <button
+        type="button"
+        className="btn-ghost intro-skip floating"
+        onClick={(e) => {
+          e.stopPropagation();
+          finish();
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
         건너뛰기
       </button>
     </div>
