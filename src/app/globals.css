@@ -861,6 +861,12 @@ select {
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
+.intro-copy-desc .intro-copy-gap {
+  height: 0.75rem;
+  line-height: 0.75rem;
+  text-shadow: none;
+}
+
 @media (max-width: 480px) {
   .intro-copy-titles {
     transform: translateY(-4.8rem);

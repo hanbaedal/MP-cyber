@@ -161,9 +161,14 @@ export default function IntroOverlay() {
           <p>아름다운 엔딩을 위한 준비</p>
         </div>
         <div className="intro-copy-desc">
-          <p>나에 대한 기록(생애주기별 추억 저장소)</p>
-          <p>소중한 사람을 언제나 기억하고 공유하는 추모관</p>
-          <p>아름다운 마지막을 직접 준비하는 장례 체험까지 이용해 보세요.</p>
+          <p>시공간의 제약 없이</p>
+          <p>언제든 찾아가 마음을 전할 수 있는</p>
+          <p>온라인 추모 공간</p>
+          <p className="intro-copy-gap" aria-hidden="true">
+            &nbsp;
+          </p>
+          <p>나와 남겨질 이들을 위해</p>
+          <p>삶의 마지막을 주체적으로 준비</p>
         </div>
         {needTapForSound ? (
           <p className="intro-sound-hint">화면을 터치하면 음악이 재생됩니다</p>
