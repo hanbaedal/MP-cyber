@@ -170,7 +170,7 @@ export default function IntroOverlay() {
             &nbsp;
           </p>
           <p>나와 남겨질 이들을 위해</p>
-          <p>삶의 마지막을 주체적으로 준비</p>
+          <p>삶의 마지막을 주체적으로 준비하는 공간</p>
         </div>
         {needTapForSound ? (
           <p className="intro-sound-hint">화면을 터치하면 음악이 재생됩니다</p>
