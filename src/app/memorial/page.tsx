@@ -30,9 +30,9 @@ export default async function MemorialListPage() {
 
   return (
     <div className="page">
-      <p className="eyebrow">Digital Memorial Hall</p>
+      <p className="eyebrow">Memorial</p>
       <h1 className="section-title">디지털 추모관</h1>
-      <p className="lede">고인을 기리는 공간을 선택해 입장하세요.</p>
+      <p className="lede">샘플 추모관을 선택해 입장하세요.</p>
 
       {error ? (
         <div className="panel" style={{ marginTop: "1.5rem" }}>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Noto_Sans_KR } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
@@ -18,6 +18,13 @@ const body = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "사이버 추모관 | MP-cyber",
   description: "일상 속 추모와 아름다운 엔딩을 위한 디지털 추모 서비스",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
