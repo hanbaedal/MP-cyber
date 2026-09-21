@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import IntroOverlay from "@/components/IntroOverlay";
+import WellDyingLogo from "@/components/WellDyingLogo";
 
 export type AuthUser = {
   authenticated: boolean;
@@ -110,7 +111,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               ☰
             </button>
             <Link href="/" className="brand">
-              <span className="brand-mark">MP</span>
+              <WellDyingLogo size="sm" className="brand-logo" />
               <span className="brand-text">사이버 추모관</span>
             </Link>
           </div>

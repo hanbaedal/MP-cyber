@@ -7,6 +7,8 @@
   --muted: #5c6f73;
   --accent: #2f6f6a;
   --accent-2: #c48b3a;
+  --soft-gold: #d4b896;
+  --soft-gold-deep: #c4a574;
   --card: rgba(255, 255, 255, 0.86);
   --line: rgba(28, 43, 46, 0.1);
   --shadow: 0 8px 24px rgba(28, 43, 46, 0.06);
@@ -16,6 +18,7 @@
   --explorer-w: 210px;
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-script: var(--font-script);
 }
 
 @theme inline {
@@ -98,6 +101,41 @@ a {
   color: white;
   font-size: 0.65rem;
   flex-shrink: 0;
+}
+
+.wd-logo {
+  font-family: var(--font-script), "Great Vibes", cursive;
+  color: var(--soft-gold);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.wd-logo-sm {
+  font-size: 1.35rem;
+}
+
+.wd-logo-md {
+  font-size: 1.85rem;
+}
+
+.wd-logo-lg {
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+}
+
+.brand-logo {
+  color: var(--soft-gold-deep);
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35));
+}
+
+.intro-logo {
+  margin-bottom: 0.55rem;
+  color: var(--soft-gold);
+  text-shadow:
+    0 1px 0 rgba(255, 248, 230, 0.35),
+    0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .brand-text {

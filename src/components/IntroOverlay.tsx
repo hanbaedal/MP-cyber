@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import WellDyingLogo from "@/components/WellDyingLogo";
 
 type IntroConfig = {
   videoUrl: string;
@@ -157,6 +158,7 @@ export default function IntroOverlay() {
 
       <div className="intro-copy">
         <div className="intro-copy-titles">
+          <WellDyingLogo size="lg" className="intro-logo" />
           <p>일상생활속 추모</p>
           <p>아름다운 엔딩을 위한 준비</p>
         </div>

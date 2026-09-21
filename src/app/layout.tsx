@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Noto_Sans_KR } from "next/font/google";
+import { Cormorant_Garamond, Great_Vibes, Noto_Sans_KR } from "next/font/google";
 import AppShell from "@/components/AppShell";
 import "./globals.css";
 
@@ -9,6 +9,12 @@ const display = Cormorant_Garamond({
   weight: ["500", "600", "700"],
 });
 
+const script = Great_Vibes({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 const body = Noto_Sans_KR({
   variable: "--font-body",
   subsets: ["latin"],
@@ -16,7 +22,7 @@ const body = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "사이버 추모관 | MP-cyber",
+  title: "Well-Dying | 사이버 추모관",
   description: "일상 속 추모와 아름다운 엔딩을 위한 디지털 추모 서비스",
 };
 
@@ -29,7 +35,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${display.variable} ${body.variable} h-full`}>
+    <html
+      lang="ko"
+      className={`${display.variable} ${script.variable} ${body.variable} h-full`}
+    >
       <body className="min-h-full antialiased">
         <AppShell>{children}</AppShell>
       </body>
