@@ -158,7 +158,7 @@ export default function IntroOverlay() {
 
       <div className="intro-copy">
         <div className="intro-copy-titles">
-          <WellDyingLogo size="lg" className="intro-logo" />
+          <WellDyingLogo size="lg" className="intro-logo" priority />
           <p>일상생활속 추모</p>
           <p>아름다운 엔딩을 위한 준비</p>
         </div>

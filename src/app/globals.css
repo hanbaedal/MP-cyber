@@ -104,38 +104,45 @@ a {
 }
 
 .wd-logo {
-  font-family: var(--font-script), "Great Vibes", cursive;
-  color: var(--soft-gold);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
 }
 
-.wd-logo-sm {
-  font-size: 1.35rem;
+.wd-logo-img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
 }
 
-.wd-logo-md {
-  font-size: 1.85rem;
+.wd-logo-sm .wd-logo-img {
+  width: 7.2rem;
+  height: auto;
 }
 
-.wd-logo-lg {
-  font-size: clamp(2.4rem, 8vw, 3.6rem);
+.wd-logo-md .wd-logo-img {
+  width: 10.5rem;
+  height: auto;
 }
 
-.brand-logo {
-  color: var(--soft-gold-deep);
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35));
+.wd-logo-lg .wd-logo-img {
+  width: min(72vw, 17.5rem);
+  height: auto;
+}
+
+.brand-logo .wd-logo-img {
+  width: 6.8rem;
 }
 
 .intro-logo {
   margin-bottom: 0.55rem;
-  color: var(--soft-gold);
-  text-shadow:
-    0 1px 0 rgba(255, 248, 230, 0.35),
-    0 4px 18px rgba(0, 0, 0, 0.35);
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.35));
+}
+
+.intro-logo .wd-logo-img {
+  width: min(78vw, 20rem);
 }
 
 .brand-text {
