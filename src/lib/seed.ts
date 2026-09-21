@@ -3,13 +3,172 @@ import { MemorialHall } from "@/models/MemorialHall";
 import { Video } from "@/models/Video";
 import { Tribute } from "@/models/Tribute";
 import { AlbumItem } from "@/models/AlbumItem";
+import { Member } from "@/models/Member";
+
+const SAMPLE_MEMBERS = [
+  {
+    loginId: "member01",
+    name: "김민수",
+    password: "sample1234",
+    phone: "010-1111-1001",
+    relation: "자녀",
+    hall: {
+      title: "영숙 추모관",
+      deceasedName: "김영숙",
+      lifespan: "1948 — 2023",
+      summary: "따뜻한 밥상과 손길로 가족을 챙기셨던 어머니를 기억합니다.",
+      portraitUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
+      theme: "traditional" as const,
+    },
+    tribute: {
+      author: "아들 민수",
+      content: "엄마의 웃음이 지금도 집 안을 환하게 비춥니다. 고맙고 사랑합니다.",
+    },
+    video: {
+      title: "가족의 하루",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "함께했던 일상을 떠올리며",
+    },
+    albums: [
+      {
+        title: "생일상",
+        imageUrl: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800&h=600&fit=crop",
+        caption: "가족이 모였던 날",
+      },
+      {
+        title: "봄나들이",
+        imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
+        caption: "좋아하는 꽃길",
+      },
+    ],
+  },
+  {
+    loginId: "member02",
+    name: "이서연",
+    password: "sample1234",
+    phone: "010-2222-2002",
+    relation: "배우자",
+    hall: {
+      title: "철수 추모관",
+      deceasedName: "이철수",
+      lifespan: "1955 — 2024",
+      summary: "성실함과 유머로 주변을 밝히셨던 남편을 기립니다.",
+      portraitUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop",
+      theme: "modern" as const,
+    },
+    tribute: {
+      author: "아내 서연",
+      content: "함께한 시간이 제게는 가장 큰 선물입니다. 편히 쉬세요.",
+    },
+    video: {
+      title: "추억 영상",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "함께 찍었던 기록",
+    },
+    albums: [
+      {
+        title: "결혼기념일",
+        imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
+        caption: "약속의 날",
+      },
+      {
+        title: "여행",
+        imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop",
+        caption: "좋아하던 바다",
+      },
+    ],
+  },
+  {
+    loginId: "member03",
+    name: "박준호",
+    password: "sample1234",
+    phone: "010-3333-3003",
+    relation: "손자",
+    hall: {
+      title: "순자 추모관",
+      deceasedName: "박순자",
+      lifespan: "1939 — 2022",
+      summary: "손주를 늘 안아 주시던 할머니의 품을 기억합니다.",
+      portraitUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
+      theme: "park" as const,
+    },
+    tribute: {
+      author: "손자 준호",
+      content: "할머니 손맛이 그리워요. 하늘의 별이 되어 지켜봐 주세요.",
+    },
+    video: {
+      title: "할머니와의 기억",
+      url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      description: "짧게 남긴 영상 인사",
+    },
+    albums: [
+      {
+        title: "명절",
+        imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+        caption: "함께한 명절상",
+      },
+      {
+        title: "정원",
+        imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop",
+        caption: "가꾸시던 화분",
+      },
+    ],
+  },
+];
+
+export async function ensureSampleMembers() {
+  await connectMongo();
+
+  for (const sample of SAMPLE_MEMBERS) {
+    const existing = await Member.findOne({ loginId: sample.loginId });
+    if (existing) continue;
+
+    const hall = await MemorialHall.create({
+      ...sample.hall,
+      isPublished: true,
+    });
+
+    await Video.create({
+      hallId: hall._id,
+      ...sample.video,
+      sortOrder: 0,
+    });
+
+    await Tribute.create({
+      hallId: hall._id,
+      ...sample.tribute,
+      isPublic: true,
+    });
+
+    await AlbumItem.create(
+      sample.albums.map((album, index) => ({
+        hallId: hall._id,
+        ...album,
+        sortOrder: index,
+      })),
+    );
+
+    await Member.create({
+      loginId: sample.loginId,
+      name: sample.name,
+      password: sample.password,
+      phone: sample.phone,
+      relation: sample.relation,
+      hallId: hall._id,
+      isActive: true,
+    });
+  }
+
+  return Member.countDocuments();
+}
 
 export async function ensureDefaultHall() {
-  await connectMongo();
-  let hall = await MemorialHall.findOne({ isPublished: true }).sort({ createdAt: 1 });
+  await ensureSampleMembers();
+  const hall = await MemorialHall.findOne({ isPublished: true }).sort({ createdAt: 1 });
   if (hall) return hall;
 
-  hall = await MemorialHall.create({
+  // 폴백: 샘플 생성에 실패한 경우 최소 1개
+  return MemorialHall.create({
     title: "별빛 추모관",
     deceasedName: "홍길동",
     lifespan: "1950 — 2024",
@@ -18,38 +177,4 @@ export async function ensureDefaultHall() {
     theme: "modern",
     isPublished: true,
   });
-
-  await Video.create({
-    hallId: hall._id,
-    title: "추모 영상",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "고인을 기억하는 영상입니다.",
-    sortOrder: 0,
-  });
-
-  await Tribute.create({
-    hallId: hall._id,
-    author: "가족",
-    content: "언제나 따뜻한 마음으로 우리를 보살펴 주셨습니다. 고맙습니다.",
-    isPublic: true,
-  });
-
-  await AlbumItem.create([
-    {
-      hallId: hall._id,
-      title: "젊은 날",
-      imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&h=600&fit=crop",
-      caption: "가족과 함께한 시간",
-      sortOrder: 0,
-    },
-    {
-      hallId: hall._id,
-      title: "산책",
-      imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=600&fit=crop",
-      caption: "좋아하는 풍경",
-      sortOrder: 1,
-    },
-  ]);
-
-  return hall;
 }

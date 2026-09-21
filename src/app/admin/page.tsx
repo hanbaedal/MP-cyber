@@ -12,10 +12,22 @@ type Hall = {
   theme: string;
 };
 
+type Member = {
+  _id: string;
+  loginId: string;
+  name: string;
+  password?: string;
+  phone?: string;
+  relation?: string;
+  hallTitle?: string | null;
+  deceasedName?: string | null;
+};
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [halls, setHalls] = useState<Hall[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [selectedHall, setSelectedHall] = useState("");
   const [message, setMessage] = useState("");
   const [videos, setVideos] = useState<Array<{ _id: string; title: string; url: string }>>([]);
@@ -50,6 +62,12 @@ export default function AdminPage() {
     if (!selectedHall && list[0]) setSelectedHall(list[0]._id);
   }
 
+  async function loadMembers() {
+    const res = await fetch("/api/members");
+    const json = await res.json();
+    setMembers(json.members || []);
+  }
+
   async function loadContents(hallId: string) {
     if (!hallId) return;
     const res = await fetch(`/api/halls/${hallId}`);
@@ -61,7 +79,10 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    refreshAuth().then(loadHalls);
+    refreshAuth().then(() => {
+      loadHalls();
+      loadMembers();
+    });
   }, []);
 
   useEffect(() => {
@@ -82,6 +103,7 @@ export default function AdminPage() {
     }
     setMessage("로그인되었습니다.");
     setAuthed(true);
+    await loadMembers();
   }
 
   async function logout() {
@@ -204,6 +226,27 @@ export default function AdminPage() {
       {message ? <p className="form-msg">{message}</p> : null}
 
       <div className="admin-grid" style={{ marginTop: "1rem" }}>
+        <section className="panel">
+          <h3>샘플 회원 (3명)</h3>
+          <div className="table-list">
+            {members.length === 0 ? (
+              <p className="form-msg">회원 데이터를 불러오는 중이거나 아직 없습니다.</p>
+            ) : (
+              members.map((m) => (
+                <div key={m._id} className="row" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+                  <strong>
+                    {m.name} ({m.loginId})
+                  </strong>
+                  <span>
+                    비번 {m.password || "****"} · {m.relation} · {m.hallTitle || "-"} / {m.deceasedName || "-"}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+          <p className="form-msg">공통 샘플 비밀번호: sample1234</p>
+        </section>
+
         <section className="panel">
           <h3>추모관 선택 / 테마</h3>
           <select value={selectedHall} onChange={(e) => setSelectedHall(e.target.value)}>
