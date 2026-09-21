@@ -137,12 +137,16 @@ a {
 }
 
 .intro-logo {
-  margin-bottom: 0.55rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto 0.55rem;
   filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.35));
 }
 
 .intro-logo .wd-logo-img {
   width: min(78vw, 20rem);
+  margin-inline: auto;
 }
 
 .brand-text {
@@ -873,9 +877,13 @@ select {
 
 .intro-copy-titles {
   display: grid;
+  justify-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 0.25rem;
   /* 기존 위치에서 약 2줄 더 위로 (−3rem → −6rem) */
   transform: translateY(-6rem);
+  text-align: center;
 }
 
 .intro-copy-titles p {
