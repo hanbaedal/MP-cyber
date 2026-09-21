@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postinstall": "node scripts/render-build.js",
     "start": "next start",
     "lint": "eslint"
   },

@@ -4,8 +4,8 @@ services:
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: yarn && yarn build
+    startCommand: yarn start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
