@@ -1,5 +1,5 @@
-const lead =
-  "웰다잉(Well-dying)은 인간으로서의 존엄성과 품위를 지키며 자신의 삶을 아름답게 마무리하는 것을 뜻합니다.";
+const NAMU_WELL_DYING =
+  "https://namu.wiki/w/%EC%9B%B0%EB%8B%A4%EC%9E%89";
 
 const cards = [
   {
@@ -42,12 +42,18 @@ const cards = [
 export default function HomePage() {
   return (
     <div className="page home-welldying">
-      <section className="home-hero">
-        <h1>Well-Dying</h1>
-        <div className="home-lead-card tone-cream">
-          <p>{lead}</p>
-        </div>
-      </section>
+      <p className="home-lead">
+        <a
+          href={NAMU_WELL_DYING}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="home-lead-link"
+        >
+          웰다잉(Well-dying)
+        </a>
+        은 인간으로서의 존엄성과 품위를 지키며 자신의 삶을 아름답게 마무리하는 것을
+        뜻합니다.
+      </p>
 
       <section className="home-card-list" aria-label="웰다잉 안내">
         {cards.map((card) => (
