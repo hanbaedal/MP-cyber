@@ -829,8 +829,8 @@ select {
 .intro-copy-titles {
   display: grid;
   gap: 0.25rem;
-  /* 기존 위치에서 약 2줄 위로 */
-  transform: translateY(-3rem);
+  /* 기존 위치에서 약 2줄 더 위로 (−3rem → −6rem) */
+  transform: translateY(-6rem);
 }
 
 .intro-copy-titles p {
@@ -849,8 +849,8 @@ select {
   gap: 0.28rem;
   max-width: 34rem;
   margin-top: 1.1rem;
-  /* 기존 위치에서 약 3줄 아래로 */
-  transform: translateY(4.2rem);
+  /* 기존 위치에서 약 6줄 더 아래로 (4.2rem → 12.6rem) */
+  transform: translateY(12.6rem);
 }
 
 .intro-copy-desc p {
@@ -863,11 +863,11 @@ select {
 
 @media (max-width: 480px) {
   .intro-copy-titles {
-    transform: translateY(-2.4rem);
+    transform: translateY(-4.8rem);
   }
 
   .intro-copy-desc {
-    transform: translateY(3.4rem);
+    transform: translateY(10rem);
   }
 }
 
