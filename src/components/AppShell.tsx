@@ -22,6 +22,16 @@ type NavItem = {
 };
 
 function buildNav(user: AuthUser | null): NavItem[] {
+  const memorialChildren: Array<{ href: string; label: string }> = [
+    { href: "/memorial", label: "샘플 목록" },
+  ];
+  if (user?.hallId) {
+    memorialChildren.unshift({
+      href: `/memorial/${user.hallId}`,
+      label: "내 추모관",
+    });
+  }
+
   const items: NavItem[] = [
     { href: "/", label: "홈" },
     {
@@ -35,13 +45,15 @@ function buildNav(user: AuthUser | null): NavItem[] {
     {
       href: "/memorial",
       label: "디지털 추모관",
-      children: user?.hallId
-        ? [{ href: `/memorial/${user.hallId}`, label: "내 추모관" }]
-        : [{ href: "/memorial", label: "샘플 목록" }],
+      children: memorialChildren,
     },
     { href: "/records", label: "기록저장소" },
     { href: "/apply", label: "이용신청" },
   ];
+
+  if (!user?.authenticated) {
+    items.push({ href: "/login", label: "로그인" });
+  }
 
   if (user?.role === "admin") {
     items.push({

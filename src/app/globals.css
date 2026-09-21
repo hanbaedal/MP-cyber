@@ -809,6 +809,68 @@ select {
   margin-bottom: 0.55rem;
 }
 
+.home-welldying {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+.home-hero {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.home-hero h1 {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display), "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.home-lead-card {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.home-lead-card p {
+  margin: 0;
+  font-size: clamp(0.9rem, 3.2vw, 1.02rem);
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.home-card-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.home-info-card {
+  padding: 0.95rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.home-info-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(0.98rem, 3.4vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.home-info-card p {
+  margin: 0;
+  font-size: clamp(0.84rem, 2.9vw, 0.95rem);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .intro-overlay {
   position: fixed;
   inset: 0;
