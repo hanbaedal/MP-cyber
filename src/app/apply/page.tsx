@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import PasswordInput from "@/components/PasswordInput";
+import Link from "next/link";
 
 export default function ApplyPage() {
   const [sent, setSent] = useState(false);
@@ -9,18 +11,18 @@ export default function ApplyPage() {
     phone: "",
     relation: "자녀",
     purpose: "추모관",
+    password: "",
     memo: "",
   });
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    // 1차: 프론트 접수 완료 UX (이후 API/DB 연동)
     setSent(true);
   }
 
   if (sent) {
     return (
-      <div className="page">
+      <div className="page narrow">
         <p className="eyebrow">Application</p>
         <h1 className="section-title">접수 완료</h1>
         <p className="lede" style={{ marginTop: "0.4rem" }}>
@@ -39,7 +41,7 @@ export default function ApplyPage() {
   }
 
   return (
-    <div className="page">
+    <div className="page narrow">
       <p className="eyebrow">Application</p>
       <h1 className="section-title">이용신청</h1>
       <p className="lede">필수 항목만 남겨 주세요. 관리자 확인 후 아이디를 발급합니다.</p>
@@ -59,6 +61,12 @@ export default function ApplyPage() {
           required
           inputMode="tel"
           autoComplete="tel"
+        />
+        <PasswordInput
+          value={form.password}
+          onChange={(v) => setForm({ ...form, password: v })}
+          placeholder="희망 비밀번호 (선택)"
+          autoComplete="new-password"
         />
         <select
           value={form.relation}
@@ -84,13 +92,24 @@ export default function ApplyPage() {
           value={form.memo}
           onChange={(e) => setForm({ ...form, memo: e.target.value })}
         />
-        <label style={{ display: "flex", gap: "0.4rem", alignItems: "flex-start", fontSize: "0.78rem", color: "var(--muted)" }}>
+        <label
+          style={{
+            display: "flex",
+            gap: "0.4rem",
+            alignItems: "flex-start",
+            fontSize: "0.78rem",
+            color: "var(--muted)",
+          }}
+        >
           <input type="checkbox" required style={{ width: "auto", marginTop: "0.15rem" }} />
           개인정보 수집·이용에 동의합니다.
         </label>
         <button className="btn btn-block" type="submit">
           신청하기
         </button>
+        <p className="form-msg">
+          계정이 있으면 <Link href="/login">로그인</Link>하세요.
+        </p>
       </form>
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import PasswordInput from "@/components/PasswordInput";
+import Link from "next/link";
 
 type Hall = {
   _id: string;
@@ -48,7 +50,7 @@ export default function AdminPage() {
   async function refreshAuth() {
     const res = await fetch("/api/auth");
     const json = await res.json();
-    setAuthed(!!json.authenticated);
+    setAuthed(!!json.authenticated && json.role === "admin");
   }
 
   async function loadHalls() {
@@ -94,11 +96,11 @@ export default function AdminPage() {
     const res = await fetch("/api/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ loginId: "admin", password }),
     });
     const json = await res.json();
-    if (!res.ok) {
-      setMessage(json.message || "로그인 실패");
+    if (!res.ok || json.role !== "admin") {
+      setMessage(json.message || "관리자 로그인 실패");
       return;
     }
     setMessage("로그인되었습니다.");
@@ -195,20 +197,21 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div className="page">
+      <div className="page narrow">
         <h1 className="section-title">관리자 로그인</h1>
-        <form className="panel" onSubmit={login} style={{ maxWidth: 420, marginTop: "1rem" }}>
-          <input
-            type="password"
-            placeholder="관리자 비밀번호"
+        <form className="panel" onSubmit={login} style={{ marginTop: "0.75rem" }}>
+          <PasswordInput
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
+            placeholder="관리자 비밀번호"
             required
           />
-          <button className="btn" type="submit">
+          <button className="btn btn-block" type="submit">
             로그인
           </button>
-          <p className="form-msg">기본값: ADMIN_PASSWORD 환경변수 (미설정 시 admin1234)</p>
+          <p className="form-msg">
+            통합 로그인은 <Link href="/login">로그인</Link> (admin / 비밀번호)
+          </p>
           {message ? <p className="form-msg">{message}</p> : null}
         </form>
       </div>

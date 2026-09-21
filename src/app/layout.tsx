@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Noto_Sans_KR } from "next/font/google";
-import SiteHeader from "@/components/SiteHeader";
+import AppShell from "@/components/AppShell";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -30,9 +30,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${display.variable} ${body.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
+      <body className="min-h-full antialiased">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
