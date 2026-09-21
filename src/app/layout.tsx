@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Great_Vibes, Noto_Sans_KR } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Great_Vibes,
+  Nanum_Myeongjo,
+  Noto_Sans_KR,
+} from "next/font/google";
 import AppShell from "@/components/AppShell";
 import "./globals.css";
 
@@ -13,6 +18,12 @@ const script = Great_Vibes({
   variable: "--font-script",
   subsets: ["latin"],
   weight: "400",
+});
+
+const haeseo = Nanum_Myeongjo({
+  variable: "--font-haeseo",
+  subsets: ["latin"],
+  weight: ["400", "700", "800"],
 });
 
 const body = Noto_Sans_KR({
@@ -37,7 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ko"
-      className={`${display.variable} ${script.variable} ${body.variable} h-full`}
+      className={`${display.variable} ${script.variable} ${haeseo.variable} ${body.variable} h-full`}
     >
       <body className="min-h-full antialiased">
         <AppShell>{children}</AppShell>

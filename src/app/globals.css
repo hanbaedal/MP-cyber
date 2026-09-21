@@ -885,7 +885,11 @@ select {
   font-size: clamp(1.35rem, 5.2vw, 2.35rem);
   line-height: 1.45;
   color: #fff;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.55),
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(0, 0, 0, 0.35);
   letter-spacing: 0.04em;
 }
 
