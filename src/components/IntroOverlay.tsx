@@ -10,9 +10,10 @@ type IntroConfig = {
   bgmUrl: string;
 };
 
-/** 접속 시 풀스크린 영상 + BGM (브라우저는 보통 터치 후 소리 허용) */
+/** 접속 시 풀스크린 영상 + BGM (세션당 1회, 브라우저는 보통 터치 후 소리 허용) */
 export default function IntroOverlay() {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
+  const [ready, setReady] = useState(false);
   const [config, setConfig] = useState<IntroConfig | null>(null);
   const [videoError, setVideoError] = useState(false);
   const [needTapForSound, setNeedTapForSound] = useState(false);
@@ -20,7 +21,14 @@ export default function IntroOverlay() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  useEffect(() => {
+    const done = sessionStorage.getItem("wd-intro-done");
+    if (!done) setShow(true);
+    setReady(true);
+  }, []);
+
   function finish() {
+    sessionStorage.setItem("wd-intro-done", "1");
     audioRef.current?.pause();
     videoRef.current?.pause();
     setShow(false);
@@ -115,7 +123,7 @@ export default function IntroOverlay() {
     }
   }
 
-  if (!show) return null;
+  if (!ready || !show) return null;
 
   return (
     <div

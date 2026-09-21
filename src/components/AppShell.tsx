@@ -110,9 +110,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             >
               ☰
             </button>
-            <Link href="/" className="brand">
+            <Link href="/" className="brand" aria-label="Well-Dying 홈">
               <WellDyingLogo size="sm" className="brand-logo" />
-              <span className="brand-text">사이버 추모관</span>
             </Link>
           </div>
           <div className="header-right">
