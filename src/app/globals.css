@@ -792,6 +792,14 @@ select {
   font-size: 1.5rem;
 }
 
+.intro-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 18rem;
+  line-height: 1.45;
+}
+
 .intro-skip {
   color: white !important;
   border-color: rgba(255, 255, 255, 0.35) !important;

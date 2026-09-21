@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-/** 사이트에 새로 접속(새로고침 포함)할 때마다 인트로를 표시합니다. */
+/** 접속 시 바로 영상+음악을 재생합니다. (시작하기 화면 없음) */
 export default function IntroOverlay() {
   const [show, setShow] = useState(true);
-  const [started, setStarted] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("/intro/intro.mp4");
+  const [bgmUrl, setBgmUrl] = useState("/intro/bgm.mp3");
+  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -15,20 +17,52 @@ export default function IntroOverlay() {
     setShow(false);
   }
 
-  async function startPlayback() {
-    setStarted(true);
-    try {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        await audioRef.current.play();
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/intro")
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled) return;
+        if (json.videoUrl) setVideoUrl(json.videoUrl);
+        if (json.bgmUrl) setBgmUrl(json.bgmUrl);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!show) return;
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (!video || !audio) return;
+
+    let cancelled = false;
+
+    async function playAll() {
+      try {
+        audio!.currentTime = 0;
+        await audio!.play();
+      } catch {
+        // 일부 브라우저는 소리 자동재생을 막을 수 있음
       }
-      if (videoRef.current) {
-        await videoRef.current.play();
+      try {
+        video!.muted = true;
+        await video!.play();
+        // 영상은 무음으로 자동재생, 소리는 bgm 담당
+      } catch {
+        if (!cancelled) setVideoError(true);
       }
-    } catch {
-      // 브라우저 자동재생 제한 시 사용자 재시도
     }
-  }
+
+    // src 반영 후 재생
+    const t = window.setTimeout(playAll, 50);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, [show, videoUrl, bgmUrl]);
 
   if (!show) return null;
 
@@ -37,33 +71,29 @@ export default function IntroOverlay() {
       <video
         ref={videoRef}
         className="intro-video"
-        src={process.env.NEXT_PUBLIC_INTRO_VIDEO_URL || "/intro/intro.mp4"}
+        key={videoUrl}
+        src={videoUrl}
         playsInline
-        preload="metadata"
-        onEnded={finish}
-      />
-      <audio
-        ref={audioRef}
-        src={process.env.NEXT_PUBLIC_INTRO_BGM_URL || "/intro/bgm.mp3"}
+        muted
+        autoPlay
         preload="auto"
-        loop
+        onEnded={finish}
+        onError={() => setVideoError(true)}
       />
+      <audio ref={audioRef} key={bgmUrl} src={bgmUrl} preload="auto" loop autoPlay />
 
-      {!started ? (
+      {videoError ? (
         <div className="intro-start">
-          <p>사이버 추모관</p>
-          <button type="button" className="btn" onClick={startPlayback}>
-            시작하기
-          </button>
-          <button type="button" className="btn-ghost intro-skip" onClick={finish}>
-            건너뛰기
-          </button>
+          <p>영상을 불러오지 못했습니다</p>
+          <p className="intro-hint">
+            Render에 INTRO_VIDEO_URL(공개 mp4 주소)을 등록해 주세요
+          </p>
         </div>
-      ) : (
-        <button type="button" className="btn-ghost intro-skip floating" onClick={finish}>
-          건너뛰기
-        </button>
-      )}
+      ) : null}
+
+      <button type="button" className="btn-ghost intro-skip floating" onClick={finish}>
+        건너뛰기
+      </button>
     </div>
   );
 }
