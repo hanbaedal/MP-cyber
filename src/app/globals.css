@@ -999,6 +999,22 @@ select {
   color: var(--muted);
 }
 
+/* 모바일·태블릿에서는 숨김 (PC 3열 빈칸 채움용) */
+.home-logo-slot {
+  display: none;
+}
+
+.home-slot-msg {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display), "Cormorant Garamond", serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
 /* 태블릿: 2열 */
 @media (min-width: 700px) {
   .home-welldying {
@@ -1089,6 +1105,32 @@ select {
     gap: 0.55rem 0.6rem;
   }
 
+  .app-main:has(.home-welldying) .home-logo-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    grid-column: 2 / 4;
+    height: 100%;
+    min-height: 0;
+    padding: 0.35rem 0.75rem;
+  }
+
+  .app-main:has(.home-welldying) .home-grid-logo {
+    filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.1));
+  }
+
+  .app-main:has(.home-welldying) .home-grid-logo .wd-logo-img {
+    width: min(9.5rem, 42%);
+    height: auto;
+  }
+
+  .app-main:has(.home-welldying) .home-slot-msg {
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    color: #2a4a4e;
+  }
+
   .app-main:has(.home-welldying) .home-info-card {
     height: 100%;
     min-height: 0;
@@ -1144,6 +1186,14 @@ select {
 
   .app-main:has(.home-welldying) .home-card-list {
     gap: 0.6rem 0.7rem;
+  }
+
+  .app-main:has(.home-welldying) .home-grid-logo .wd-logo-img {
+    width: min(11rem, 40%);
+  }
+
+  .app-main:has(.home-welldying) .home-slot-msg {
+    font-size: 1.2rem;
   }
 
   .app-main:has(.home-welldying) .home-info-card {

@@ -1,4 +1,5 @@
 import HomeCardIcon, { type IconName } from "@/components/HomeCardIcon";
+import WellDyingLogo from "@/components/WellDyingLogo";
 
 const NAMU_WELL_DYING =
   "https://namu.wiki/w/%EC%9B%B0%EB%8B%A4%EC%9E%89";
@@ -82,6 +83,14 @@ export default function HomePage() {
             </div>
           </article>
         ))}
+        <div className="home-logo-slot">
+          <WellDyingLogo size="sm" className="home-grid-logo" />
+          <p className="home-slot-msg">
+            기억은 일상 속에,
+            <br />
+            준비는 지금부터.
+          </p>
+        </div>
       </section>
     </div>
   );
