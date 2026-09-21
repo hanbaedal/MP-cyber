@@ -845,6 +845,7 @@ select {
 
 .home-card-list {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 0.7rem;
 }
 
@@ -869,6 +870,22 @@ select {
   font-size: clamp(0.84rem, 2.9vw, 0.95rem);
   line-height: 1.6;
   color: var(--muted);
+}
+
+@media (min-width: 700px) {
+  .home-welldying {
+    max-width: 52rem;
+  }
+
+  .home-card-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  /* 홀수 마지막 카드는 한 줄 전폭 */
+  .home-info-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
 }
 
 .intro-overlay {
