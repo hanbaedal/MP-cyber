@@ -39,8 +39,8 @@ export function toYouTubeEmbed(url: string): string | null {
     }
 
     if (!id) return null;
-    // mute=1 로 자동재생 허용, 우리 BGM을 따로 재생
-    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1`;
+    // mute=1 자동재생, playsinline 모바일, 전체화면 느낌
+    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&fs=0&iv_load_policy=3`;
   } catch {
     return null;
   }

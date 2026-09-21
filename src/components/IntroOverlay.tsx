@@ -9,7 +9,7 @@ type IntroConfig = {
   bgmUrl: string;
 };
 
-/** 접속 시 바로 영상+BGM 재생 (시작하기 없음) */
+/** 접속 시 풀스크린(반응형)으로 영상+BGM 재생 */
 export default function IntroOverlay() {
   const [show, setShow] = useState(true);
   const [config, setConfig] = useState<IntroConfig | null>(null);
@@ -60,31 +60,51 @@ export default function IntroOverlay() {
     }
   }, [show, config]);
 
+  // 모바일 주소창 높이 변화 대응
+  useEffect(() => {
+    if (!show) return;
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        "--intro-vh",
+        `${window.innerHeight}px`,
+      );
+    };
+    setVh();
+    window.addEventListener("resize", setVh);
+    window.addEventListener("orientationchange", setVh);
+    return () => {
+      window.removeEventListener("resize", setVh);
+      window.removeEventListener("orientationchange", setVh);
+    };
+  }, [show]);
+
   if (!show) return null;
 
   return (
-    <div className="intro-overlay">
-      {config?.isYouTube && config.youtubeEmbed ? (
-        <iframe
-          className="intro-video intro-youtube"
-          src={config.youtubeEmbed}
-          title="intro"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-        />
-      ) : (
-        <video
-          ref={videoRef}
-          className="intro-video"
-          src={config?.videoUrl || "/intro/intro.mp4"}
-          playsInline
-          muted
-          autoPlay
-          preload="auto"
-          onEnded={finish}
-          onError={() => setVideoError(true)}
-        />
-      )}
+    <div className="intro-overlay" role="dialog" aria-label="인트로">
+      <div className="intro-media">
+        {config?.isYouTube && config.youtubeEmbed ? (
+          <iframe
+            className="intro-youtube"
+            src={config.youtubeEmbed}
+            title="intro"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            className="intro-file"
+            src={config?.videoUrl || "/intro/intro.mp4"}
+            playsInline
+            muted
+            autoPlay
+            preload="auto"
+            onEnded={finish}
+            onError={() => setVideoError(true)}
+          />
+        )}
+      </div>
 
       <audio
         ref={audioRef}
@@ -97,9 +117,6 @@ export default function IntroOverlay() {
       {videoError && !config?.isYouTube ? (
         <div className="intro-start">
           <p>영상을 불러오지 못했습니다</p>
-          <p className="intro-hint">
-            YouTube면 NEXT_PUBLIC_INTRO_VIDEO 에 watch 주소를 넣고 재배포하세요
-          </p>
         </div>
       ) : null}
 
