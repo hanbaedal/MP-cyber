@@ -880,13 +880,13 @@ select {
 
 .intro-copy-titles p {
   margin: 0;
-  font-family: var(--font-display), "Noto Serif KR", serif;
-  font-weight: 700;
+  font-family: var(--font-haeseo), "Nanum Myeongjo", "Noto Serif KR", serif;
+  font-weight: 800;
   font-size: clamp(1.35rem, 5.2vw, 2.35rem);
-  line-height: 1.35;
+  line-height: 1.45;
   color: #fff;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
 }
 
 .intro-copy-desc {
