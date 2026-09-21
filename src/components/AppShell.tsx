@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import SiteFooter from "@/components/SiteFooter";
+import IntroOverlay from "@/components/IntroOverlay";
 
 export type AuthUser = {
   authenticated: boolean;
@@ -22,6 +24,14 @@ function buildNav(user: AuthUser | null): NavItem[] {
   const items: NavItem[] = [
     { href: "/", label: "홈" },
     {
+      href: "/guide",
+      label: "디지털 추모 안내",
+      children: [
+        { href: "/guide/what", label: "디지털 추모란?" },
+        { href: "/guide/why", label: "필요한 이유" },
+      ],
+    },
+    {
       href: "/memorial",
       label: "디지털 추모관",
       children: user?.hallId
@@ -33,7 +43,14 @@ function buildNav(user: AuthUser | null): NavItem[] {
   ];
 
   if (user?.role === "admin") {
-    items.push({ href: "/admin", label: "관리자" });
+    items.push({
+      href: "/admin",
+      label: "관리자",
+      children: [
+        { href: "/admin/applications", label: "회원 등록신청" },
+        { href: "/admin", label: "추모관 관리" },
+      ],
+    });
   }
 
   return items;
@@ -46,6 +63,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     "/memorial": true,
+    "/guide": true,
+    "/admin": true,
   });
 
   const loadUser = useCallback(async () => {
@@ -189,7 +208,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </ul>
       </aside>
 
-      <main className="app-main">{children}</main>
+      <main className="app-main">
+        {children}
+        <SiteFooter />
+      </main>
+      <IntroOverlay />
     </div>
   );
 }

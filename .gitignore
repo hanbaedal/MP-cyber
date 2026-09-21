@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large intro media (host on CDN / Render disk / external URL)
+/public/intro/*.mp4
+/public/intro/*.MP4
+/public/intro/*.mp3
+/public/intro/*.MP3

@@ -665,6 +665,181 @@ select {
   font-size: 0.68rem;
 }
 
+.site-footer {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.site-footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem var(--pad-x) 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-company {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.footer-company p {
+  margin: 0;
+}
+
+.footer-sns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.sns-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #eef4f2;
+  border: 1px solid var(--line);
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+.prose-page .lede {
+  margin-top: 0.35rem;
+}
+
+.prose-block {
+  margin-top: 0.85rem;
+  padding: 0.9rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.65rem;
+}
+
+.prose-block p,
+.prose-block li {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.prose-block h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.prose-block h3 {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+}
+
+.prose-block ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tone-box {
+  background: linear-gradient(160deg, #eef7f4, #e7eef8);
+}
+
+.prose-home .prose-block {
+  margin-bottom: 0.55rem;
+}
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #0b1214;
+  display: grid;
+  place-items: center;
+}
+
+.intro-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.intro-start {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.55rem;
+  background: rgba(8, 14, 16, 0.45);
+  text-align: center;
+  color: white;
+}
+
+.intro-start p {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display), serif;
+  font-size: 1.5rem;
+}
+
+.intro-skip {
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.intro-skip.floating {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(20, 30, 32, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.modal-panel {
+  width: min(420px, 100%);
+  background: white;
+  border-radius: 0.9rem;
+  padding: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  box-shadow: var(--shadow);
+}
+
+.modal-panel h3 {
+  margin: 0 0 0.35rem;
+}
+
+.modal-panel p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.app-row {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
 @media (min-width: 900px) {
   :root {
     --pad-x: 1.25rem;
@@ -689,6 +864,10 @@ select {
   }
 
   .site-header-inner {
+    padding-left: calc(var(--explorer-w) + var(--pad-x));
+  }
+
+  .site-footer-inner {
     padding-left: calc(var(--explorer-w) + var(--pad-x));
   }
 
