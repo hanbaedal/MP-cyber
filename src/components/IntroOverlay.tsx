@@ -99,8 +99,8 @@ export default function IntroOverlay() {
             playsInline
             muted
             autoPlay
+            loop
             preload="auto"
-            onEnded={finish}
             onError={() => setVideoError(true)}
           />
         )}
@@ -119,6 +119,18 @@ export default function IntroOverlay() {
           <p>영상을 불러오지 못했습니다</p>
         </div>
       ) : null}
+
+      <div className="intro-copy">
+        <div className="intro-copy-titles">
+          <p>일상생활속 추모</p>
+          <p>아름다운 엔딩을 위한 준비</p>
+        </div>
+        <div className="intro-copy-desc">
+          <p>나에 대한 기록(생애주기별 추억 저장소)</p>
+          <p>소중한 사람을 언제나 기억하고 공유하는 추모관</p>
+          <p>아름다운 마지막을 직접 준비하는 장례 체험까지 이용해 보세요.</p>
+        </div>
+      </div>
 
       <button type="button" className="btn-ghost intro-skip floating" onClick={finish}>
         건너뛰기
