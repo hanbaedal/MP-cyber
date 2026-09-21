@@ -40,8 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# large intro media (host on CDN / Render disk / external URL)
+# large intro video only (mp3 bgm is committed under public/intro/bgm.mp3)
 /public/intro/*.mp4
 /public/intro/*.MP4
-/public/intro/*.mp3
-/public/intro/*.MP3
