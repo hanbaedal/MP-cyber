@@ -24,9 +24,11 @@ services:
         sync: false
       - key: INTRO_VIDEO_URL
         sync: false
-      - key: INTRO_BGM_URL
+      - key: NEXT_PUBLIC_INTRO_VIDEO
         sync: false
       - key: NEXT_PUBLIC_INTRO_VIDEO_URL
+        sync: false
+      - key: INTRO_BGM_URL
         sync: false
       - key: NEXT_PUBLIC_INTRO_BGM_URL
         sync: false

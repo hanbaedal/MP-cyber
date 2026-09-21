@@ -2,14 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** 접속 시 바로 영상+음악을 재생합니다. (시작하기 화면 없음) */
+type IntroConfig = {
+  videoUrl: string;
+  youtubeEmbed: string | null;
+  isYouTube: boolean;
+  bgmUrl: string;
+};
+
+/** 접속 시 바로 영상+BGM 재생 (시작하기 없음) */
 export default function IntroOverlay() {
   const [show, setShow] = useState(true);
-  const [videoUrl, setVideoUrl] = useState("/intro/intro.mp4");
-  const [bgmUrl, setBgmUrl] = useState("/intro/bgm.mp3");
+  const [config, setConfig] = useState<IntroConfig | null>(null);
   const [videoError, setVideoError] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   function finish() {
     audioRef.current?.pause();
@@ -21,72 +27,78 @@ export default function IntroOverlay() {
     let cancelled = false;
     fetch("/api/intro")
       .then((r) => r.json())
-      .then((json) => {
-        if (cancelled) return;
-        if (json.videoUrl) setVideoUrl(json.videoUrl);
-        if (json.bgmUrl) setBgmUrl(json.bgmUrl);
+      .then((json: IntroConfig) => {
+        if (!cancelled) setConfig(json);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) {
+          setConfig({
+            videoUrl: "/intro/intro.mp4",
+            youtubeEmbed: null,
+            isYouTube: false,
+            bgmUrl: "/intro/bgm.mp3",
+          });
+        }
+      });
     return () => {
       cancelled = true;
     };
   }, []);
 
   useEffect(() => {
-    if (!show) return;
-    const video = videoRef.current;
+    if (!show || !config) return;
     const audio = audioRef.current;
-    if (!video || !audio) return;
+    if (!audio) return;
 
-    let cancelled = false;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
 
-    async function playAll() {
-      try {
-        audio!.currentTime = 0;
-        await audio!.play();
-      } catch {
-        // 일부 브라우저는 소리 자동재생을 막을 수 있음
-      }
-      try {
-        video!.muted = true;
-        await video!.play();
-        // 영상은 무음으로 자동재생, 소리는 bgm 담당
-      } catch {
-        if (!cancelled) setVideoError(true);
-      }
+    if (!config.isYouTube && videoRef.current) {
+      const v = videoRef.current;
+      v.muted = true;
+      v.play().catch(() => setVideoError(true));
     }
-
-    // src 반영 후 재생
-    const t = window.setTimeout(playAll, 50);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(t);
-    };
-  }, [show, videoUrl, bgmUrl]);
+  }, [show, config]);
 
   if (!show) return null;
 
   return (
     <div className="intro-overlay">
-      <video
-        ref={videoRef}
-        className="intro-video"
-        key={videoUrl}
-        src={videoUrl}
-        playsInline
-        muted
-        autoPlay
-        preload="auto"
-        onEnded={finish}
-        onError={() => setVideoError(true)}
-      />
-      <audio ref={audioRef} key={bgmUrl} src={bgmUrl} preload="auto" loop autoPlay />
+      {config?.isYouTube && config.youtubeEmbed ? (
+        <iframe
+          className="intro-video intro-youtube"
+          src={config.youtubeEmbed}
+          title="intro"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          className="intro-video"
+          src={config?.videoUrl || "/intro/intro.mp4"}
+          playsInline
+          muted
+          autoPlay
+          preload="auto"
+          onEnded={finish}
+          onError={() => setVideoError(true)}
+        />
+      )}
 
-      {videoError ? (
+      <audio
+        ref={audioRef}
+        src={config?.bgmUrl || "/intro/bgm.mp3"}
+        preload="auto"
+        loop
+        autoPlay
+      />
+
+      {videoError && !config?.isYouTube ? (
         <div className="intro-start">
           <p>영상을 불러오지 못했습니다</p>
           <p className="intro-hint">
-            Render에 INTRO_VIDEO_URL(공개 mp4 주소)을 등록해 주세요
+            YouTube면 NEXT_PUBLIC_INTRO_VIDEO 에 watch 주소를 넣고 재배포하세요
           </p>
         </div>
       ) : null}

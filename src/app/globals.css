@@ -769,11 +769,11 @@ select {
   place-items: center;
 }
 
-.intro-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.intro-youtube {
+  border: 0;
+  pointer-events: none;
 }
+
 
 .intro-start {
   position: absolute;
