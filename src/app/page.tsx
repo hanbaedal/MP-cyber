@@ -65,7 +65,9 @@ export default function HomePage() {
         >
           웰다잉(Well-dying)
         </a>
-        은 인간으로서의 존엄성과 품위를 지키며 자신의 삶을 아름답게 마무리하는 것을
+        은
+        <br className="home-lead-br" />
+        인간으로서의 존엄성과 품위를 지키며 자신의 삶을 아름답게 마무리하는 것을
         뜻합니다.
       </p>
 
