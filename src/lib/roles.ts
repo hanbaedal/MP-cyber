@@ -93,3 +93,43 @@ export const SITE_MODE_KEY = "wd-site-mode";
 export function isWelldyingSlug(value: string): value is WelldyingSlug {
   return WELLDying_TOPICS.some((t) => t.slug === value);
 }
+
+/** 추모 영역 — 이별준비 소메뉴 */
+export const FAREWELL_MENUS: Array<{
+  slug: string;
+  title: string;
+  summary: string;
+  href: string;
+}> = [
+  {
+    slug: "guide",
+    title: "이별준비 안내",
+    summary: "이별준비의 의미와 남겨질 이를 위한 이유를 안내합니다.",
+    href: "/farewell/guide",
+  },
+  {
+    slug: "note",
+    title: "고인의 노트",
+    summary: "생전에 남긴 엔딩 노트와 메시지·사진·영상을 읽습니다.",
+    href: "/farewell/note",
+  },
+  {
+    slug: "life",
+    title: "생애 기록",
+    summary: "일상·준비·유품·장례 희망 등 고인이 남긴 웰다잉 기록을 봅니다.",
+    href: "/farewell/life",
+  },
+  {
+    slug: "board",
+    title: "가족 게시판",
+    summary: "가족이 남기는 공지와 일정 (유족 작성, 방문 열람).",
+    href: "/farewell/board",
+  },
+  {
+    slug: "guestbook",
+    title: "방명록",
+    summary: "추모객이 마음을 전하는 조문 메시지입니다.",
+    href: "/farewell/guestbook",
+  },
+];
+

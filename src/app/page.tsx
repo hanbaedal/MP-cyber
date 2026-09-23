@@ -81,9 +81,9 @@ export default function HomePage() {
           </p>
         </section>
         <div className="sitemap-grid">
-          <Link href="/welldying" className="sitemap-card tone-cream">
-            <strong>고인의 웰다잉 기록</strong>
-            <span>7가지 읽기 전용</span>
+          <Link href="/farewell" className="sitemap-card tone-cream">
+            <strong>이별준비</strong>
+            <span>고인의 노트·생애 기록·게시판·방명록</span>
           </Link>
           {ready ? (
             <>
@@ -94,9 +94,9 @@ export default function HomePage() {
                 <strong>디지털 추모관</strong>
                 <span>추모관·앨범·영상·추모글 CRUD</span>
               </Link>
-              <Link href="/memorial" className="sitemap-card tone-peach">
-                <strong>추억앨범·영상</strong>
-                <span>유족이 남기는 기록</span>
+              <Link href="/farewell/board" className="sitemap-card tone-peach">
+                <strong>가족 게시판</strong>
+                <span>유족 공지 작성</span>
               </Link>
             </>
           ) : (
@@ -142,10 +142,13 @@ export default function HomePage() {
       <div className="page home-role">
         <section className="home-role-hero">
           <h1>추모 방문</h1>
-          <p>공개된 디지털 추모관에서 고인을 기억하고 마음을 전할 수 있습니다.</p>
+          <p>공개 추모관과 이별준비(고인의 기록·방명록)를 이용할 수 있습니다.</p>
           <div className="cta-row">
             <Link href="/memorial" className="btn">
               추모관 목록
+            </Link>
+            <Link href="/farewell" className="btn-ghost">
+              이별준비
             </Link>
             <button
               type="button"

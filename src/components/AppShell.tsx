@@ -20,6 +20,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     "/guide": true,
     "/admin": true,
     "/welldying": true,
+    "/farewell": true,
   });
 
   const loadUser = useCallback(async () => {
@@ -36,7 +37,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem(SITE_MODE_KEY) as SiteMode | null;
     if (saved === "memorial" || saved === "welldying") {
       setSiteMode(saved);
-    } else if (pathname.startsWith("/memorial")) {
+    } else if (pathname.startsWith("/memorial") || pathname.startsWith("/farewell")) {
       setSiteMode("memorial");
     }
   }, [pathname]);

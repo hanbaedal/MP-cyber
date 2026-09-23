@@ -1,5 +1,5 @@
 import type { SiteMode } from "@/lib/roles";
-import { WELLDying_TOPICS } from "@/lib/roles";
+import { FAREWELL_MENUS, WELLDying_TOPICS } from "@/lib/roles";
 
 export type AuthUser = {
   authenticated: boolean;
@@ -23,6 +23,10 @@ function welldyingChildren() {
   return WELLDying_TOPICS.map((t) => ({ href: t.href, label: t.title }));
 }
 
+function farewellChildren() {
+  return FAREWELL_MENUS.map((m) => ({ href: m.href, label: m.title }));
+}
+
 /** 본인(생전): 웰다잉 CRUD, 추모 메뉴 숨김 */
 function ownerNav(): NavItem[] {
   return [
@@ -36,29 +40,34 @@ function ownerNav(): NavItem[] {
   ];
 }
 
-/** 유족(이관 후): 웰다잉 읽기 + 추모 CRUD */
+/** 유족(이관 후): 웰다잉 읽기 + 이별준비 + 추모 CRUD */
 function successorNav(hallId: string | null, transferred: boolean): NavItem[] {
   const items: NavItem[] = [
     { href: "/", label: "홈" },
-    {
-      href: "/welldying",
-      label: "고인의 웰다잉 기록 (읽기)",
-      children: welldyingChildren(),
-    },
   ];
 
   if (transferred) {
-    items.push({
-      href: "/memorial",
-      label: "디지털 추모 (CRUD)",
-      children: [
-        ...(hallId
-          ? [{ href: `/memorial/${hallId}`, label: "추모관 관리" }]
-          : [{ href: "/memorial", label: "추모관" }]),
-        { href: "/memorial", label: "추억앨범·영상" },
-        { href: hallId ? `/memorial/${hallId}` : "/memorial", label: "추모글 관리" },
-      ],
-    });
+    items.push(
+      {
+        href: "/farewell",
+        label: "이별준비",
+        children: farewellChildren(),
+      },
+      {
+        href: "/memorial",
+        label: "디지털 추모 (CRUD)",
+        children: [
+          ...(hallId
+            ? [{ href: `/memorial/${hallId}`, label: "추모관 관리" }]
+            : [{ href: "/memorial", label: "추모관" }]),
+          { href: "/memorial", label: "추억앨범·영상" },
+          {
+            href: hallId ? `/memorial/${hallId}` : "/memorial",
+            label: "추모글 관리",
+          },
+        ],
+      },
+    );
   } else {
     items.push({
       href: "/",
@@ -97,15 +106,12 @@ function visitorWelldyingNav(): NavItem[] {
 function visitorMemorialNav(): NavItem[] {
   return [
     { href: "/memorial", label: "추모관 홈" },
-    { href: "/memorial", label: "공개 추모관 목록" },
     {
-      href: "/guide",
-      label: "추모 안내",
-      children: [
-        { href: "/guide/what", label: "디지털 추모란?" },
-        { href: "/guide/why", label: "필요한 이유" },
-      ],
+      href: "/farewell",
+      label: "이별준비",
+      children: farewellChildren(),
     },
+    { href: "/memorial", label: "공개 추모관 목록" },
     { href: "/", label: "웰다잉으로 이동" },
     { href: "/login", label: "로그인" },
   ];
@@ -118,6 +124,11 @@ function adminNav(): NavItem[] {
       href: "/welldying",
       label: "본인(생전) 영역",
       children: welldyingChildren(),
+    },
+    {
+      href: "/farewell",
+      label: "이별준비 (추모)",
+      children: farewellChildren(),
     },
     {
       href: "/memorial",
