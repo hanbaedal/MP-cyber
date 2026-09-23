@@ -6,78 +6,20 @@ import { useCallback, useEffect, useState } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import IntroOverlay from "@/components/IntroOverlay";
 import WellDyingLogo from "@/components/WellDyingLogo";
-
-export type AuthUser = {
-  authenticated: boolean;
-  role: "admin" | "member" | null;
-  loginId: string | null;
-  name: string | null;
-  hallId: string | null;
-};
-
-type NavItem = {
-  href: string;
-  label: string;
-  children?: Array<{ href: string; label: string }>;
-};
-
-function buildNav(user: AuthUser | null): NavItem[] {
-  const memorialChildren: Array<{ href: string; label: string }> = [
-    { href: "/memorial", label: "샘플 목록" },
-  ];
-  if (user?.hallId) {
-    memorialChildren.unshift({
-      href: `/memorial/${user.hallId}`,
-      label: "내 추모관",
-    });
-  }
-
-  const items: NavItem[] = [
-    { href: "/", label: "홈" },
-    {
-      href: "/guide",
-      label: "디지털 추모 안내",
-      children: [
-        { href: "/guide/what", label: "디지털 추모란?" },
-        { href: "/guide/why", label: "필요한 이유" },
-      ],
-    },
-    {
-      href: "/memorial",
-      label: "디지털 추모관",
-      children: memorialChildren,
-    },
-    { href: "/records", label: "기록저장소" },
-    { href: "/apply", label: "이용신청" },
-  ];
-
-  if (!user?.authenticated) {
-    items.push({ href: "/login", label: "로그인" });
-  }
-
-  if (user?.role === "admin") {
-    items.push({
-      href: "/admin",
-      label: "관리자",
-      children: [
-        { href: "/admin/applications", label: "회원 등록신청" },
-        { href: "/admin", label: "추모관 관리" },
-      ],
-    });
-  }
-
-  return items;
-}
+import { buildNav, roleLabel, type AuthUser } from "@/lib/nav";
+import { SITE_MODE_KEY, type SiteMode } from "@/lib/roles";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [siteMode, setSiteMode] = useState<SiteMode>("welldying");
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     "/memorial": true,
     "/guide": true,
     "/admin": true,
+    "/welldying": true,
   });
 
   const loadUser = useCallback(async () => {
@@ -91,8 +33,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [loadUser, pathname]);
 
   useEffect(() => {
+    const saved = localStorage.getItem(SITE_MODE_KEY) as SiteMode | null;
+    if (saved === "memorial" || saved === "welldying") {
+      setSiteMode(saved);
+    } else if (pathname.startsWith("/memorial")) {
+      setSiteMode("memorial");
+    }
+  }, [pathname]);
+
+  useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  function switchMode(mode: SiteMode) {
+    setSiteMode(mode);
+    localStorage.setItem(SITE_MODE_KEY, mode);
+    router.push(mode === "memorial" ? "/memorial" : "/");
+  }
 
   async function logout() {
     await fetch("/api/auth", { method: "DELETE" });
@@ -102,12 +59,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       loginId: null,
       name: null,
       hallId: null,
+      memberId: null,
+      memberKind: null,
+      transferStatus: null,
+      ownerMemberId: null,
     });
     router.push("/");
     router.refresh();
   }
 
-  const nav = buildNav(user);
+  const nav = buildNav(user, siteMode);
+  const isGuest = !user?.authenticated;
+  const chip = roleLabel(user);
 
   return (
     <div className="app-shell">
@@ -125,13 +88,31 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/" className="brand" aria-label="Well-Dying 홈">
               <WellDyingLogo size="sm" className="brand-logo" />
             </Link>
+            {isGuest ? (
+              <div className="mode-switch" role="group" aria-label="방문 모드">
+                <button
+                  type="button"
+                  className={siteMode === "welldying" ? "active" : undefined}
+                  onClick={() => switchMode("welldying")}
+                >
+                  웰다잉
+                </button>
+                <button
+                  type="button"
+                  className={siteMode === "memorial" ? "active" : undefined}
+                  onClick={() => switchMode("memorial")}
+                >
+                  추모
+                </button>
+              </div>
+            ) : null}
           </div>
           <div className="header-right">
             {user?.authenticated ? (
               <>
                 <span className="user-chip">
                   {user.name || user.loginId}
-                  {user.role === "admin" ? " · 관리" : ""}
+                  {chip ? ` · ${chip}` : ""}
                 </span>
                 <button type="button" className="btn-ghost header-auth-btn" onClick={logout}>
                   로그아웃
@@ -156,7 +137,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <aside className={`explorer ${open ? "open" : ""}`}>
-        <div className="explorer-title">탐색기</div>
+        <div className="explorer-title">
+          탐색기
+          {isGuest ? (
+            <span className="explorer-mode-tag">
+              {siteMode === "memorial" ? "추모 방문" : "웰다잉 방문"}
+            </span>
+          ) : null}
+        </div>
         <ul className="explorer-tree">
           {nav.map((item) => {
             const active =
@@ -167,7 +155,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             const isOpen = expanded[item.href] ?? active;
 
             return (
-              <li key={item.href}>
+              <li key={`${item.href}-${item.label}`}>
                 <div className="explorer-row">
                   {hasChildren ? (
                     <button
@@ -201,7 +189,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         pathname === child.href ||
                         pathname.startsWith(`${child.href}/`);
                       return (
-                        <li key={child.href}>
+                        <li key={`${child.href}-${child.label}`}>
                           <Link
                             href={child.href}
                             className={childActive ? "active" : undefined}

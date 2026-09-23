@@ -124,13 +124,20 @@ export async function ensureSampleMembers() {
   for (const sample of SAMPLE_MEMBERS) {
     const existing = await Member.findOne({ loginId: sample.loginId });
     if (existing) {
-      // 이미 있는 샘플 회원의 영상 URL만 최신으로 맞춤
       if (existing.hallId) {
         await Video.updateMany(
           { hallId: existing.hallId },
           { $set: { url: SAMPLE_VIDEO_URL } },
         );
       }
+      // 기존 샘플에 역할 필드 보강
+      if (!existing.memberKind) {
+        existing.memberKind = "owner";
+      }
+      if (!existing.transferStatus) {
+        existing.transferStatus = sample.loginId === "member02" ? "transferred" : "living";
+      }
+      await existing.save();
       continue;
     }
 
@@ -166,11 +173,69 @@ export async function ensureSampleMembers() {
       phone: sample.phone,
       relation: sample.relation,
       hallId: hall._id,
+      memberKind: "owner",
+      transferStatus: sample.loginId === "member02" ? "transferred" : "living",
       isActive: true,
     });
   }
 
-  // 예전 샘플(릭롤) 영상만 새 URL로 교체
+  // 유족 샘플 계정 (본인 member01 living / member02 transferred)
+  const successorSpecs = [
+    {
+      loginId: "family01",
+      name: "김유족",
+      password: "sample1234",
+      phone: "010-1111-9001",
+      relation: "자녀",
+      ownerLoginId: "member01",
+    },
+    {
+      loginId: "family02",
+      name: "이가족",
+      password: "sample1234",
+      phone: "010-2222-9002",
+      relation: "배우자",
+      ownerLoginId: "member02",
+    },
+  ];
+
+  for (const spec of successorSpecs) {
+    const exists = await Member.findOne({ loginId: spec.loginId });
+    if (exists) continue;
+    const owner = await Member.findOne({ loginId: spec.ownerLoginId });
+    if (!owner) continue;
+    await Member.create({
+      loginId: spec.loginId,
+      name: spec.name,
+      password: spec.password,
+      phone: spec.phone,
+      relation: spec.relation,
+      hallId: owner.hallId,
+      memberKind: "successor",
+      transferStatus: owner.transferStatus || "living",
+      ownerMemberId: owner._id,
+      isActive: true,
+    });
+  }
+
+  const sampleOwner = await Member.findOne({ memberKind: "owner" });
+  if (sampleOwner) {
+    const { WelldyingEntry } = await import("@/models/WelldyingEntry");
+    const { WELLDying_TOPICS } = await import("@/lib/roles");
+    for (const topic of WELLDying_TOPICS) {
+      const exists = await WelldyingEntry.findOne({ slug: topic.slug, isSample: true });
+      if (exists) continue;
+      await WelldyingEntry.create({
+        ownerMemberId: sampleOwner._id,
+        slug: topic.slug,
+        title: topic.title,
+        body: `${topic.summary}\n\n(샘플) 로그인 후 본인 계정으로 자신만의 기록을 남길 수 있습니다. 엔딩 노트에는 사진 3장·영상 1개를 함께 저장할 수 있습니다.`,
+        photoUrls: [],
+        isSample: true,
+      });
+    }
+  }
+
   await Video.updateMany(
     {
       url: {

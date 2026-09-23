@@ -1506,3 +1506,191 @@ select {
     grid-template-columns: 1fr;
   }
 }
+
+.mode-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-left: 0.35rem;
+  flex-shrink: 0;
+}
+
+.mode-switch button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.72rem;
+  padding: 0.28rem 0.65rem;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.mode-switch button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.explorer-mode-tag {
+  display: inline-block;
+  margin-left: 0.45rem;
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.home-role-hero {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.home-role-hero h1 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+}
+
+.home-role-hero p {
+  margin: 0 auto;
+  max-width: 36rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.admin-sitemap-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 800px) {
+  .admin-sitemap-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.admin-sitemap-block {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-sitemap-block h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.admin-sitemap-block p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.admin-sitemap-block ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.86rem;
+}
+
+.home-card-list-static {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+a.home-info-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.welldying-index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.welldying-index-list a {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.welldying-index-list strong {
+  font-size: 0.95rem;
+}
+
+.welldying-index-list span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.welldying-detail .access-note,
+.welldying-detail .sample-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--accent);
+}
+
+.welldying-editor {
+  margin-top: 0.85rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.55rem;
+}
+
+.welldying-editor h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.welldying-editor textarea,
+.welldying-editor input {
+  width: 100%;
+  font: inherit;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.media-fields {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field-label {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.form-message {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--accent);
+}
+
+.photo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.photo-row img {
+  width: 5.5rem;
+  height: 5.5rem;
+  object-fit: cover;
+  border-radius: 0.45rem;
+}

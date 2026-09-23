@@ -1,9 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import type { MemberKind, SessionRole, TransferStatus } from "@/lib/roles";
 
 const COOKIE = "mp_session";
-
-export type SessionRole = "admin" | "member";
 
 export type SessionPayload = {
   role: SessionRole;
@@ -11,6 +10,9 @@ export type SessionPayload = {
   name?: string;
   memberId?: string;
   hallId?: string;
+  memberKind?: MemberKind;
+  transferStatus?: TransferStatus;
+  ownerMemberId?: string;
 };
 
 function getSecret() {
@@ -44,6 +46,9 @@ export async function createMemberSession(data: {
   loginId: string;
   name: string;
   hallId?: string;
+  memberKind: MemberKind;
+  transferStatus: TransferStatus;
+  ownerMemberId?: string;
 }) {
   await setSession({
     role: "member",
@@ -51,13 +56,15 @@ export async function createMemberSession(data: {
     loginId: data.loginId,
     name: data.name,
     hallId: data.hallId,
+    memberKind: data.memberKind,
+    transferStatus: data.transferStatus,
+    ownerMemberId: data.ownerMemberId,
   });
 }
 
 export async function clearSession() {
   const jar = await cookies();
   jar.delete(COOKIE);
-  // 이전 관리자 쿠키 호환 제거
   jar.delete("mp_admin");
 }
 
@@ -67,13 +74,21 @@ export async function getSession(): Promise<SessionPayload | null> {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecret());
-    const role = payload.role === "member" ? "member" : "admin";
+    const role: SessionRole = payload.role === "member" ? "member" : "admin";
+    const memberKind =
+      payload.memberKind === "successor" ? "successor" : payload.role === "member" ? "owner" : undefined;
+    const transferStatus =
+      payload.transferStatus === "transferred" ? "transferred" : "living";
     return {
       role,
       loginId: typeof payload.loginId === "string" ? payload.loginId : undefined,
       name: typeof payload.name === "string" ? payload.name : undefined,
       memberId: typeof payload.memberId === "string" ? payload.memberId : undefined,
       hallId: typeof payload.hallId === "string" ? payload.hallId : undefined,
+      memberKind,
+      transferStatus: role === "member" ? transferStatus : undefined,
+      ownerMemberId:
+        typeof payload.ownerMemberId === "string" ? payload.ownerMemberId : undefined,
     };
   } catch {
     return null;

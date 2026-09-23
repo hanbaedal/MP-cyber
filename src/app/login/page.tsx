@@ -162,6 +162,11 @@ export default function LoginPage() {
       )}
 
       <p className="form-msg" style={{ marginTop: "0.75rem" }}>
+        샘플: 본인 <code>member01</code> / 유족(이관전) <code>family01</code> / 유족(이관후){" "}
+        <code>family02</code> · 비밀번호 <code>sample1234</code> · 관리자{" "}
+        <code>admin</code>
+      </p>
+      <p className="form-msg" style={{ marginTop: "0.35rem" }}>
         간단 신청만 하시려면 <Link href="/apply">이용신청</Link>으로 이동하세요.
       </p>
     </div>

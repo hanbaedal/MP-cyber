@@ -36,7 +36,7 @@ function resolveBgmUrl() {
 }
 
 /** YouTube watch/share/shorts URL → embed URL 또는 null */
-export function toYouTubeEmbed(url: string): string | null {
+function toYouTubeEmbed(url: string): string | null {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, "");

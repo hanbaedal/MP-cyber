@@ -1,60 +1,168 @@
-import HomeCardIcon, { type IconName } from "@/components/HomeCardIcon";
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import HomeCardIcon from "@/components/HomeCardIcon";
 import WellDyingLogo from "@/components/WellDyingLogo";
+import { WELLDying_TOPICS, SITE_MODE_KEY, type SiteMode } from "@/lib/roles";
+import type { AuthUser } from "@/lib/nav";
 
 const NAMU_WELL_DYING =
   "https://namu.wiki/w/%EC%9B%B0%EB%8B%A4%EC%9E%89";
 
-const cards: Array<{
-  title: string;
-  body: string;
-  tone: string;
-  icon: IconName;
-}> = [
-  {
-    title: "일상생활 속 추모",
-    body: "기억을 일상으로 가져오기. 추모는 거창한 의식이 아니라, 고인과의 추억을 일상 속에 자연스럽게 스며들게 하는 것에서 시작합니다.",
-    tone: "mint",
-    icon: "heart",
-  },
-  {
-    title: "디지털 추모관",
-    body: "시공간의 제약 없이 언제든 찾아가 마음을 전할 수 있는 온라인 추모 공간입니다. SNS 계정을 활용해 추모의 글을 남길 수도 있습니다.",
-    tone: "sky",
-    icon: "monitor",
-  },
-  {
-    title: "아름다운 엔딩을 위한 준비",
-    body: "나와 남겨질 이들을 위해 삶의 마지막을 주체적으로 준비하는 것은, 남은 삶을 더욱 풍요롭게 만듭니다.",
-    tone: "peach",
-    icon: "sun",
-  },
-  {
-    title: "사전연명의료의향서 작성",
-    body: "스스로 결정을 내리지 못할 때를 대비해, 무의미한 연명의료를 받지 않겠다는 의사를 법적 문서로 미리 등록해 두는 것입니다.",
-    tone: "lilac",
-    icon: "document",
-  },
-  {
-    title: "엔딩 노트(Ending Note) 기록",
-    body: "남겨진 가족을 위해 자산 정보, 장례 희망 사항, 비밀번호 등과 함께, 가족에게 전하고 싶은 메시지를 미리 적어 둡니다.",
-    tone: "cream",
-    icon: "note",
-  },
-  {
-    title: "유품 정리와 미니멀 라이프",
-    body: "진짜 소중한 것만 남기고 주변을 정리하면, 남겨진 이들이 유품 정리로 겪는 심적·물질적 부담을 줄일 수 있습니다.",
-    tone: "rose",
-    icon: "box",
-  },
-  {
-    title: "장례 방식 미리 고민하기",
-    body: "전통 장례뿐 아니라 자연장(수목장·잔디장)이나 가족장 등 원하는 형태를 미리 생각해 가족과 공유해 두는 것이 좋습니다.",
-    tone: "mint",
-    icon: "tree",
-  },
-];
-
 export default function HomePage() {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [siteMode, setSiteMode] = useState<SiteMode>("welldying");
+
+  useEffect(() => {
+    fetch("/api/auth")
+      .then((r) => r.json())
+      .then(setUser)
+      .catch(() => setUser(null));
+    const saved = localStorage.getItem(SITE_MODE_KEY) as SiteMode | null;
+    if (saved === "memorial" || saved === "welldying") setSiteMode(saved);
+  }, []);
+
+  if (user?.authenticated && user.role === "admin") {
+    return (
+      <div className="page home-role">
+        <section className="home-role-hero">
+          <h1>관리자 홈</h1>
+          <p>본인(생전) 사이트맵과 유족(추모) 사이트맵을 함께 관리합니다.</p>
+        </section>
+        <div className="admin-sitemap-grid">
+          <section className="admin-sitemap-block tone-mint">
+            <h2>본인(생전) 사이트맵</h2>
+            <p>회원이 살아 있을 때 작성하는 웰다잉 7가지 CRUD</p>
+            <ul>
+              {WELLDying_TOPICS.map((t) => (
+                <li key={t.slug}>
+                  <Link href={t.href}>{t.title}</Link>
+                </li>
+              ))}
+            </ul>
+            <Link href="/admin" className="btn">
+              회원·추모관 관리
+            </Link>
+          </section>
+          <section className="admin-sitemap-block tone-sky">
+            <h2>유족(추모) 사이트맵</h2>
+            <p>이관 후 유족이 관리하는 디지털 추모 영역</p>
+            <ul>
+              <li>
+                <Link href="/memorial">디지털 추모관</Link>
+              </li>
+              <li>
+                <Link href="/records">기록저장소·추억 미디어</Link>
+              </li>
+              <li>
+                <Link href="/admin/applications">회원 등록신청</Link>
+              </li>
+            </ul>
+            <Link href="/memorial" className="btn">
+              추모관 목록
+            </Link>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  if (user?.authenticated && user.memberKind === "successor") {
+    const ready = user.transferStatus === "transferred";
+    return (
+      <div className="page home-role">
+        <section className="home-role-hero">
+          <h1>유족 홈</h1>
+          <p>
+            {ready
+              ? "고인의 웰다잉 기록은 읽기만 가능하며, 추모 관련 메뉴를 관리할 수 있습니다."
+              : "아직 사후 이관 전입니다. 이관 후 추모 메뉴가 열립니다."}
+          </p>
+        </section>
+        <div className="sitemap-grid">
+          <Link href="/welldying" className="sitemap-card tone-cream">
+            <strong>고인의 웰다잉 기록</strong>
+            <span>7가지 읽기 전용</span>
+          </Link>
+          {ready ? (
+            <>
+              <Link
+                href={user.hallId ? `/memorial/${user.hallId}` : "/memorial"}
+                className="sitemap-card tone-sky"
+              >
+                <strong>디지털 추모관</strong>
+                <span>추모관·앨범·영상·추모글 CRUD</span>
+              </Link>
+              <Link href="/memorial" className="sitemap-card tone-peach">
+                <strong>추억앨범·영상</strong>
+                <span>유족이 남기는 기록</span>
+              </Link>
+            </>
+          ) : (
+            <div className="sitemap-card tone-lilac">
+              <strong>이관 대기</strong>
+              <span>관리자 또는 본인 이관 후 이용</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (user?.authenticated && user.role === "member") {
+    return (
+      <div className="page home-role">
+        <section className="home-role-hero">
+          <h1>본인(생전) 홈</h1>
+          <p>웰다잉 7가지를 작성·수정합니다. 추모 메뉴는 이관 전까지 표시되지 않습니다.</p>
+        </section>
+        <section className="home-card-list home-card-list-static" aria-label="웰다잉 준비">
+          {WELLDying_TOPICS.map((card) => (
+            <Link
+              key={card.slug}
+              href={card.href}
+              className={`home-info-card tone-${card.tone}`}
+            >
+              <HomeCardIcon name={card.icon} />
+              <div className="home-info-body">
+                <h2>{card.title}</h2>
+                <p>{card.summary}</p>
+              </div>
+            </Link>
+          ))}
+        </section>
+      </div>
+    );
+  }
+
+  // 방문자: 모드별
+  if (siteMode === "memorial") {
+    return (
+      <div className="page home-role">
+        <section className="home-role-hero">
+          <h1>추모 방문</h1>
+          <p>공개된 디지털 추모관에서 고인을 기억하고 마음을 전할 수 있습니다.</p>
+          <div className="cta-row">
+            <Link href="/memorial" className="btn">
+              추모관 목록
+            </Link>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => {
+                localStorage.setItem(SITE_MODE_KEY, "welldying");
+                setSiteMode("welldying");
+              }}
+            >
+              웰다잉으로 이동
+            </button>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="page home-welldying">
       <p className="home-lead">
@@ -74,14 +182,18 @@ export default function HomePage() {
       </p>
 
       <section className="home-card-list" aria-label="웰다잉 안내">
-        {cards.map((card) => (
-          <article key={card.title} className={`home-info-card tone-${card.tone}`}>
+        {WELLDying_TOPICS.map((card) => (
+          <Link
+            key={card.slug}
+            href={card.href}
+            className={`home-info-card tone-${card.tone}`}
+          >
             <HomeCardIcon name={card.icon} />
             <div className="home-info-body">
               <h2>{card.title}</h2>
-              <p>{card.body}</p>
+              <p>{card.summary}</p>
             </div>
-          </article>
+          </Link>
         ))}
         <div className="home-logo-slot">
           <WellDyingLogo size="sm" className="home-grid-logo" />

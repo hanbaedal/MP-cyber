@@ -21,6 +21,9 @@ export async function GET() {
     name: session?.name ?? null,
     hallId: session?.hallId ?? null,
     memberId: session?.memberId ?? null,
+    memberKind: session?.memberKind ?? null,
+    transferStatus: session?.transferStatus ?? null,
+    ownerMemberId: session?.ownerMemberId ?? null,
   });
 }
 
@@ -30,11 +33,7 @@ export async function POST(request: Request) {
     const loginId = String(body.loginId || body.username || "").trim();
     const password = String(body.password || "");
 
-    // 관리자: admin / ADMIN_PASSWORD 또는 비밀번호만
-    if (
-      (!loginId || loginId === "admin") &&
-      verifyAdminPassword(password)
-    ) {
+    if ((!loginId || loginId === "admin") && verifyAdminPassword(password)) {
       await createAdminSession();
       return NextResponse.json({
         ok: true,
@@ -61,11 +60,28 @@ export async function POST(request: Request) {
       );
     }
 
+    let transferStatus = member.transferStatus || "living";
+    let hallId = member.hallId ? String(member.hallId) : undefined;
+    let ownerMemberId = member.ownerMemberId ? String(member.ownerMemberId) : undefined;
+
+    // 유족: 본인 계정의 이관 상태·추모관을 따름
+    if (member.memberKind === "successor" && member.ownerMemberId) {
+      const owner = await Member.findById(member.ownerMemberId);
+      if (owner) {
+        transferStatus = owner.transferStatus || "living";
+        hallId = owner.hallId ? String(owner.hallId) : hallId;
+        ownerMemberId = String(owner._id);
+      }
+    }
+
     await createMemberSession({
       memberId: String(member._id),
       loginId: member.loginId,
       name: member.name,
-      hallId: member.hallId ? String(member.hallId) : undefined,
+      hallId,
+      memberKind: member.memberKind || "owner",
+      transferStatus,
+      ownerMemberId,
     });
 
     return NextResponse.json({
@@ -73,7 +89,9 @@ export async function POST(request: Request) {
       role: "member",
       name: member.name,
       loginId: member.loginId,
-      hallId: member.hallId ? String(member.hallId) : null,
+      hallId: hallId ?? null,
+      memberKind: member.memberKind || "owner",
+      transferStatus,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "error";
