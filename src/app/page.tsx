@@ -81,28 +81,28 @@ export default function HomePage() {
           </p>
         </section>
         <div className="sitemap-grid">
-          <Link href="/farewell" className="sitemap-card tone-cream">
-            <strong>이별준비</strong>
-            <span>고인의 노트·생애 기록·게시판·방명록</span>
-          </Link>
           {ready ? (
             <>
+              <Link href="/farewell" className="sitemap-card tone-cream">
+                <strong>이별준비</strong>
+                <span>디지털 추모 · 고인의 노트·생애 기록·방명록</span>
+              </Link>
               <Link
                 href={user.hallId ? `/memorial/${user.hallId}` : "/memorial"}
                 className="sitemap-card tone-sky"
               >
-                <strong>디지털 추모관</strong>
-                <span>추모관·앨범·영상·추모글 CRUD</span>
+                <strong>추모관</strong>
+                <span>디지털 추모 · 앨범·영상·추모글</span>
               </Link>
               <Link href="/farewell/board" className="sitemap-card tone-peach">
                 <strong>가족 게시판</strong>
-                <span>유족 공지 작성</span>
+                <span>디지털 추모 · 유족 공지</span>
               </Link>
             </>
           ) : (
             <div className="sitemap-card tone-lilac">
               <strong>이관 대기</strong>
-              <span>관리자 또는 본인 이관 후 이용</span>
+              <span>관리자 또는 본인 이관 후 추모 메뉴 개방</span>
             </div>
           )}
         </div>
@@ -142,10 +142,10 @@ export default function HomePage() {
       <div className="page home-role">
         <section className="home-role-hero">
           <h1>추모 방문</h1>
-          <p>공개 추모관과 이별준비(고인의 기록·방명록)를 이용할 수 있습니다.</p>
+          <p>디지털 추모에서 고인을 찾거나, 이별준비(고인의 기록·방명록)를 이용할 수 있습니다.</p>
           <div className="cta-row">
             <Link href="/memorial" className="btn">
-              추모관 목록
+              고인 찾기
             </Link>
             <Link href="/farewell" className="btn-ghost">
               이별준비

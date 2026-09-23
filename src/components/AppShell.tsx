@@ -148,10 +148,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <ul className="explorer-tree">
           {nav.map((item) => {
+            const childActive = item.children?.some(
+              (c) => pathname === c.href || pathname.startsWith(`${c.href}/`),
+            );
             const active =
               item.href === "/"
                 ? pathname === "/"
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`) ||
+                  !!childActive;
             const hasChildren = !!item.children?.length;
             const isOpen = expanded[item.href] ?? active;
 

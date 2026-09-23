@@ -41,34 +41,29 @@ function ownerNav(): NavItem[] {
   ];
 }
 
-/** 유족(이관 후): 웰다잉 읽기 + 이별준비 + 추모 CRUD */
+/** 유족(이관 후): 추모 메뉴 아래에 이별준비 + 추모관 CRUD */
 function successorNav(hallId: string | null, transferred: boolean): NavItem[] {
   const items: NavItem[] = [
     { href: "/", label: "홈" },
   ];
 
   if (transferred) {
-    items.push(
-      {
-        href: "/farewell",
-        label: "이별준비",
-        children: farewellChildren(),
-      },
-      {
-        href: "/memorial",
-        label: "디지털 추모 (CRUD)",
-        children: [
-          ...(hallId
-            ? [{ href: `/memorial/${hallId}`, label: "추모관 관리" }]
-            : [{ href: "/memorial", label: "추모관" }]),
-          { href: "/memorial", label: "추억앨범·영상" },
-          {
-            href: hallId ? `/memorial/${hallId}` : "/memorial",
-            label: "추모글 관리",
-          },
-        ],
-      },
-    );
+    items.push({
+      href: "/memorial",
+      label: "디지털 추모",
+      children: [
+        { href: "/farewell", label: "이별준비" },
+        ...farewellChildren(),
+        ...(hallId
+          ? [{ href: `/memorial/${hallId}`, label: "추모관 관리" }]
+          : [{ href: "/memorial", label: "추모관" }]),
+        { href: "/memorial", label: "추억앨범·영상" },
+        {
+          href: hallId ? `/memorial/${hallId}` : "/memorial",
+          label: "추모글 관리",
+        },
+      ],
+    });
   } else {
     items.push({
       href: "/",
@@ -103,14 +98,17 @@ function visitorWelldyingNav(): NavItem[] {
   ];
 }
 
-/** 추모 방문자 */
+/** 추모 방문자 — 이별준비는 추모 메뉴 하위 */
 function visitorMemorialNav(): NavItem[] {
   return [
-    { href: "/memorial", label: "고인 찾기·추모관" },
     {
-      href: "/farewell",
-      label: "이별준비",
-      children: farewellChildren(),
+      href: "/memorial",
+      label: "디지털 추모",
+      children: [
+        { href: "/memorial", label: "고인 찾기·추모관" },
+        { href: "/farewell", label: "이별준비" },
+        ...farewellChildren(),
+      ],
     },
     { href: "/apply", label: "추모관 이용신청" },
     { href: "/", label: "웰다잉으로 이동" },
@@ -139,14 +137,11 @@ function adminNav(): NavItem[] {
       children: welldyingChildren(),
     },
     {
-      href: "/farewell",
-      label: "이별준비 (추모)",
-      children: farewellChildren(),
-    },
-    {
       href: "/memorial",
       label: "유족(추모) 영역",
       children: [
+        { href: "/farewell", label: "이별준비" },
+        ...farewellChildren(),
         { href: "/memorial", label: "추모관 목록" },
         { href: "/records", label: "기록저장소" },
       ],
