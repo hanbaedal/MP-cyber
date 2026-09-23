@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { FormEvent, useMemo, useState } from "react";
+import InvitePanel from "@/components/InvitePanel";
 
 const MemorialRoom3D = dynamic(() => import("@/components/MemorialRoom3D"), {
   ssr: false,
@@ -91,6 +92,8 @@ export default function MemorialClient({ data }: { data: HallPayload }) {
           />
         ) : null}
       </section>
+
+      <InvitePanel hallId={data.hall._id} />
 
       <div className="tabs">
         {TABS.map((t) => (

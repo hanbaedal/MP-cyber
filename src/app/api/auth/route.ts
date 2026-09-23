@@ -24,6 +24,7 @@ export async function GET() {
     memberKind: session?.memberKind ?? null,
     transferStatus: session?.transferStatus ?? null,
     ownerMemberId: session?.ownerMemberId ?? null,
+    guest: session?.role === "guest" || !!session?.guest,
   });
 }
 

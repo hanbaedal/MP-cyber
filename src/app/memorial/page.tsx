@@ -1,4 +1,4 @@
-import Link from "next/link";
+import MemorialSearchList from "@/components/MemorialSearchList";
 import { ensureDefaultHall } from "@/lib/seed";
 import { MemorialHall } from "@/models/MemorialHall";
 
@@ -32,7 +32,9 @@ export default async function MemorialListPage() {
     <div className="page">
       <p className="eyebrow">Memorial</p>
       <h1 className="section-title">디지털 추모관</h1>
-      <p className="lede">샘플 추모관을 선택해 입장하세요.</p>
+      <p className="lede">
+        고인을 검색해 공개 추모하거나, 유족이 보낸 초대 링크로 입장하세요.
+      </p>
 
       {error ? (
         <div className="panel" style={{ marginTop: "1.5rem" }}>
@@ -41,18 +43,7 @@ export default async function MemorialListPage() {
           <p>Render/로컬에 `MONGODB_URI` 환경변수를 설정해 주세요.</p>
         </div>
       ) : (
-        <div className="menu-grid" style={{ marginTop: "1.5rem" }}>
-          {halls.map((h) => (
-            <Link key={h._id} href={`/memorial/${h._id}`} className="feature-card">
-              <h3>{h.title}</h3>
-              <p>
-                {h.deceasedName}
-                {h.lifespan ? ` · ${h.lifespan}` : ""}
-              </p>
-              {h.summary ? <p>{h.summary}</p> : null}
-            </Link>
-          ))}
-        </div>
+        <MemorialSearchList halls={halls} />
       )}
     </div>
   );

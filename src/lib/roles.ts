@@ -4,7 +4,7 @@ export type MemberKind = "owner" | "successor";
 
 export type TransferStatus = "living" | "transferred";
 
-export type SessionRole = "admin" | "member";
+export type SessionRole = "admin" | "member" | "guest";
 
 export type WelldyingSlug =
   | "daily-memorial"

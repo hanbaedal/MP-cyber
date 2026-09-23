@@ -13,6 +13,9 @@ export type SessionPayload = {
   memberKind?: MemberKind;
   transferStatus?: TransferStatus;
   ownerMemberId?: string;
+  /** 게스트 초대 입장 */
+  guest?: boolean;
+  inviteToken?: string;
 };
 
 function getSecret() {
@@ -20,11 +23,11 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
-async function setSession(payload: SessionPayload) {
+async function setSession(payload: SessionPayload, maxAgeSec = 60 * 60 * 24 * 7) {
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(`${Math.max(1, Math.floor(maxAgeSec / 3600))}h`)
     .sign(getSecret());
 
   const jar = await cookies();
@@ -33,7 +36,7 @@ async function setSession(payload: SessionPayload) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: maxAgeSec,
   });
 }
 
@@ -62,6 +65,27 @@ export async function createMemberSession(data: {
   });
 }
 
+/** 초대 링크로 입장한 임시 게스트 (해당 추모관만) */
+export async function createGuestSession(data: {
+  hallId: string;
+  inviteToken: string;
+  hallTitle?: string;
+  expiresInSec?: number;
+}) {
+  const maxAge = data.expiresInSec ?? 60 * 60 * 24 * 14;
+  await setSession(
+    {
+      role: "guest",
+      guest: true,
+      hallId: data.hallId,
+      inviteToken: data.inviteToken,
+      name: "초대 손님",
+      loginId: "guest",
+    },
+    maxAge,
+  );
+}
+
 export async function clearSession() {
   const jar = await cookies();
   jar.delete(COOKIE);
@@ -74,11 +98,19 @@ export async function getSession(): Promise<SessionPayload | null> {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecret());
-    const role: SessionRole = payload.role === "member" ? "member" : "admin";
+    let role: SessionRole = "admin";
+    if (payload.role === "member") role = "member";
+    if (payload.role === "guest" || payload.guest === true) role = "guest";
+
     const memberKind =
-      payload.memberKind === "successor" ? "successor" : payload.role === "member" ? "owner" : undefined;
+      payload.memberKind === "successor"
+        ? "successor"
+        : role === "member"
+          ? "owner"
+          : undefined;
     const transferStatus =
       payload.transferStatus === "transferred" ? "transferred" : "living";
+
     return {
       role,
       loginId: typeof payload.loginId === "string" ? payload.loginId : undefined,
@@ -89,6 +121,9 @@ export async function getSession(): Promise<SessionPayload | null> {
       transferStatus: role === "member" ? transferStatus : undefined,
       ownerMemberId:
         typeof payload.ownerMemberId === "string" ? payload.ownerMemberId : undefined,
+      guest: role === "guest",
+      inviteToken:
+        typeof payload.inviteToken === "string" ? payload.inviteToken : undefined,
     };
   } catch {
     return null;

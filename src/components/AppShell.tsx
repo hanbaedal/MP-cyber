@@ -70,7 +70,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   const nav = buildNav(user, siteMode);
-  const isGuest = !user?.authenticated;
+  const isVisitor = !user?.authenticated || user.role === "guest";
   const chip = roleLabel(user);
 
   return (
@@ -89,7 +89,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/" className="brand" aria-label="Well-Dying 홈">
               <WellDyingLogo size="sm" className="brand-logo" />
             </Link>
-            {isGuest ? (
+            {isVisitor ? (
               <div className="mode-switch" role="group" aria-label="방문 모드">
                 <button
                   type="button"
@@ -140,7 +140,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <aside className={`explorer ${open ? "open" : ""}`}>
         <div className="explorer-title">
           탐색기
-          {isGuest ? (
+          {isVisitor ? (
             <span className="explorer-mode-tag">
               {siteMode === "memorial" ? "추모 방문" : "웰다잉 방문"}
             </span>

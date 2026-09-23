@@ -3,7 +3,7 @@ import { FAREWELL_MENUS, WELLDying_TOPICS } from "@/lib/roles";
 
 export type AuthUser = {
   authenticated: boolean;
-  role: "admin" | "member" | null;
+  role: "admin" | "member" | "guest" | null;
   loginId: string | null;
   name: string | null;
   hallId: string | null;
@@ -11,6 +11,7 @@ export type AuthUser = {
   memberKind: "owner" | "successor" | null;
   transferStatus: "living" | "transferred" | null;
   ownerMemberId: string | null;
+  guest?: boolean;
 };
 
 export type NavItem = {
@@ -105,15 +106,27 @@ function visitorWelldyingNav(): NavItem[] {
 /** 추모 방문자 */
 function visitorMemorialNav(): NavItem[] {
   return [
-    { href: "/memorial", label: "추모관 홈" },
+    { href: "/memorial", label: "고인 찾기·추모관" },
     {
       href: "/farewell",
       label: "이별준비",
       children: farewellChildren(),
     },
-    { href: "/memorial", label: "공개 추모관 목록" },
+    { href: "/apply", label: "추모관 이용신청" },
     { href: "/", label: "웰다잉으로 이동" },
     { href: "/login", label: "로그인" },
+  ];
+}
+
+/** 초대 링크로 입장한 손님 */
+function guestNav(hallId: string | null): NavItem[] {
+  return [
+    {
+      href: hallId ? `/memorial/${hallId}` : "/memorial",
+      label: "초대받은 추모관",
+    },
+    { href: "/memorial", label: "다른 고인 찾기" },
+    { href: "/", label: "홈" },
   ];
 }
 
@@ -154,6 +167,10 @@ export function buildNav(user: AuthUser | null, siteMode: SiteMode): NavItem[] {
     return adminNav();
   }
 
+  if (user?.authenticated && user.role === "guest") {
+    return guestNav(user.hallId);
+  }
+
   if (user?.authenticated && user.role === "member") {
     if (user.memberKind === "successor") {
       return successorNav(user.hallId, user.transferStatus === "transferred");
@@ -167,6 +184,7 @@ export function buildNav(user: AuthUser | null, siteMode: SiteMode): NavItem[] {
 export function roleLabel(user: AuthUser | null): string {
   if (!user?.authenticated) return "";
   if (user.role === "admin") return "관리";
+  if (user.role === "guest") return "초대손님";
   if (user.memberKind === "successor") {
     return user.transferStatus === "transferred" ? "유족" : "유족(이관 전)";
   }
