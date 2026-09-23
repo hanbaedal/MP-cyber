@@ -8,13 +8,16 @@ export interface IMember {
   phone?: string;
   relation?: string;
   hallId?: Types.ObjectId;
-  /** 본인(생전) / 유족(지정) */
   memberKind: MemberKind;
-  /** 본인 계정에만: 생전 living → 사후 transferred */
   transferStatus: TransferStatus;
-  /** 유족 계정: 연결 본인 member _id */
   ownerMemberId?: Types.ObjectId;
+  /** 추모만 가입 (본인 웰다잉 없음) */
+  memorialOnly?: boolean;
   isActive: boolean;
+  isLaunchFree?: boolean;
+  planYears?: number;
+  planExpiresAt?: Date;
+  deathDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,7 +43,12 @@ const MemberSchema = new Schema<IMember>(
       index: true,
     },
     ownerMemberId: { type: Schema.Types.ObjectId, ref: "Member", index: true },
+    memorialOnly: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    isLaunchFree: { type: Boolean, default: false },
+    planYears: Number,
+    planExpiresAt: Date,
+    deathDate: Date,
   },
   { timestamps: true },
 );

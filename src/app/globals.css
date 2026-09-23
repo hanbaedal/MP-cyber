@@ -1694,3 +1694,6 @@ a.home-info-card {
   object-fit: cover;
   border-radius: 0.45rem;
 }
+
+.pricing-box p { margin: 0; font-size: 0.84rem; line-height: 1.5; }
+.pricing-list { margin: 0.45rem 0 0; padding-left: 1.1rem; font-size: 0.8rem; color: var(--muted); }

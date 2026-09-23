@@ -137,6 +137,10 @@ export async function ensureSampleMembers() {
       if (!existing.transferStatus) {
         existing.transferStatus = sample.loginId === "member02" ? "transferred" : "living";
       }
+      if (sample.loginId === "member02") {
+        existing.transferStatus = "transferred";
+        existing.isActive = false;
+      }
       await existing.save();
       continue;
     }
@@ -201,9 +205,17 @@ export async function ensureSampleMembers() {
 
   for (const spec of successorSpecs) {
     const exists = await Member.findOne({ loginId: spec.loginId });
-    if (exists) continue;
     const owner = await Member.findOne({ loginId: spec.ownerLoginId });
     if (!owner) continue;
+    if (exists) {
+      exists.ownerMemberId = owner._id;
+      exists.hallId = owner.hallId;
+      exists.memberKind = "successor";
+      exists.transferStatus = owner.transferStatus || "living";
+      exists.isActive = owner.transferStatus === "transferred";
+      await exists.save();
+      continue;
+    }
     await Member.create({
       loginId: spec.loginId,
       name: spec.name,
@@ -214,7 +226,7 @@ export async function ensureSampleMembers() {
       memberKind: "successor",
       transferStatus: owner.transferStatus || "living",
       ownerMemberId: owner._id,
-      isActive: true,
+      isActive: owner.transferStatus === "transferred",
     });
   }
 
