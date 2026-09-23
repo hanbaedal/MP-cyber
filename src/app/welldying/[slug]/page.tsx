@@ -207,10 +207,6 @@ export default function WelldyingDetailPage() {
         )}
         {message ? <p className="form-message">{message}</p> : null}
       </section>
-
-      <p>
-        <Link href="/welldying">← 웰다잉 목록</Link>
-      </p>
     </div>
   );
 }
